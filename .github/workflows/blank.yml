@@ -1,36 +1,377 @@
-# This is a basic workflow to help you get started with Actions
+name: Build BlueCalc APK
 
-name: CI
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Create Android project
+        shell: bash
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          mkdir -p app/src/main/java/com/example/bluecalc
+          mkdir -p app/src/main/res/values
+
+          cat > settings.gradle <<'EOF'
+          pluginManagement {
+              repositories {
+                  google()
+                  mavenCentral()
+                  gradlePluginPortal()
+              }
+          }
+
+          dependencyResolutionManagement {
+              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+
+          rootProject.name = "BlueCalc"
+          include(":app")
+          EOF
+
+          cat > build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application' version '8.6.1' apply false
+          }
+          EOF
+
+          cat > gradle.properties <<'EOF'
+          org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+          android.useAndroidX=true
+          EOF
+
+          cat > app/build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application'
+          }
+
+          android {
+              namespace 'com.example.bluecalc'
+              compileSdk 35
+
+              defaultConfig {
+                  applicationId 'com.example.bluecalc'
+                  minSdk 23
+                  targetSdk 35
+                  versionCode 1
+                  versionName '1.0'
+              }
+          }
+          EOF
+
+          cat > app/src/main/AndroidManifest.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+              <application
+                  android:theme="@style/AppTheme"
+                  android:label="BlueCalc"
+                  android:allowBackup="true"
+                  android:supportsRtl="true">
+                  <activity
+                      android:name=".MainActivity"
+                      android:exported="true">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          EOF
+
+          cat > app/src/main/res/values/styles.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
+                  <item name="android:fontFamily">sans</item>
+                  <item name="android:colorAccent">#2196F3</item>
+                  <item name="android:navigationBarColor">#050A12</item>
+                  <item name="android:statusBarColor">#050A12</item>
+                  <item name="android:windowLightStatusBar">false</item>
+              </style>
+          </resources>
+          EOF
+
+          cat > app/src/main/java/com/example/bluecalc/MainActivity.java <<'EOF'
+          package com.example.bluecalc;
+
+          import android.app.Activity;
+          import android.os.Bundle;
+          import android.graphics.Color;
+          import android.view.Gravity;
+          import android.view.View;
+          import android.widget.*;
+
+          import java.text.SimpleDateFormat;
+          import java.util.Date;
+          import java.util.Locale;
+
+          public class MainActivity extends Activity {
+
+              LinearLayout root;
+              TextView display;
+
+              @Override
+              public void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+                  showCalculator();
+              }
+
+              TextView text(String value, float size) {
+                  TextView t = new TextView(this);
+                  t.setText(value);
+                  t.setTextColor(Color.WHITE);
+                  t.setTextSize(size);
+                  t.setGravity(Gravity.CENTER);
+                  t.setPadding(8, 8, 8, 8);
+                  return t;
+              }
+
+              Button button(String value) {
+                  Button b = new Button(this);
+                  b.setText(value);
+                  b.setTextSize(18);
+                  b.setTextColor(Color.WHITE);
+                  return b;
+              }
+
+              void base() {
+                  root = new LinearLayout(this);
+                  root.setOrientation(LinearLayout.VERTICAL);
+                  root.setPadding(16, 20, 16, 16);
+                  root.setBackgroundColor(Color.rgb(5, 10, 18));
+                  setContentView(root);
+              }
+
+              void showCalculator() {
+                  base();
+
+                  TextView title = text("BlueCalc", 28);
+                  root.addView(title, new LinearLayout.LayoutParams(-1, 60));
+
+                  String date = new SimpleDateFormat(
+                          "dd MMMM yyyy • EEEE",
+                          Locale.getDefault()
+                  ).format(new Date());
+
+                  TextView dateView = text(date, 15);
+                  dateView.setTextColor(Color.LTGRAY);
+                  root.addView(dateView, new LinearLayout.LayoutParams(-1, 45));
+
+                  display = text("0", 36);
+                  display.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+                  display.setPadding(16, 10, 16, 10);
+                  root.addView(display, new LinearLayout.LayoutParams(-1, 100));
+
+                  String[][] keys = {
+                          {"7","8","9","÷"},
+                          {"4","5","6","×"},
+                          {"1","2","3","−"},
+                          {"0",".","%","+"},
+                          {"C","="}
+                  };
+
+                  for (String[] row : keys) {
+                      LinearLayout line = new LinearLayout(this);
+                      line.setWeightSum(row.length);
+
+                      for (String k : row) {
+                          Button b = button(k);
+                          b.setOnClickListener(v -> press(((Button)v).getText().toString()));
+                          line.addView(b, new LinearLayout.LayoutParams(0, 65, 1));
+                      }
+
+                      root.addView(line);
+                  }
+
+                  Button converter = button("CONVERTER");
+                  converter.setOnClickListener(v -> showConverter());
+                  root.addView(converter, new LinearLayout.LayoutParams(-1, 65));
+              }
+
+              void press(String key) {
+                  String old = display.getText().toString();
+
+                  if (key.equals("C")) {
+                      display.setText("0");
+                  } else if (key.equals("=")) {
+                      try {
+                          display.setText(simpleCalculate(old));
+                      } catch (Exception e) {
+                          display.setText("Error");
+                      }
+                  } else {
+                      if (old.equals("0") || old.equals("Error"))
+                          display.setText(key);
+                      else
+                          display.append(key);
+                  }
+              }
+
+              String simpleCalculate(String s) {
+                  s = s.replace("×", "*").replace("÷", "/").replace("−", "-");
+
+                  try {
+                      double result = eval(s);
+                      if (result == (long) result)
+                          return String.valueOf((long) result);
+                      return String.valueOf(result);
+                  } catch (Exception e) {
+                      throw new RuntimeException();
+                  }
+              }
+
+              double eval(String expression) {
+                  return new Object() {
+                      int pos = -1, ch;
+
+                      void next() {
+                          ch = (++pos < expression.length()) ? expression.charAt(pos) : -1;
+                      }
+
+                      boolean eat(int c) {
+                          while (ch == ' ') next();
+                          if (ch == c) {
+                              next();
+                              return true;
+                          }
+                          return false;
+                      }
+
+                      double parse() {
+                          next();
+                          double x = parseExpression();
+                          if (pos < expression.length()) throw new RuntimeException();
+                          return x;
+                      }
+
+                      double parseExpression() {
+                          double x = parseTerm();
+                          while (true) {
+                              if (eat('+')) x += parseTerm();
+                              else if (eat('-')) x -= parseTerm();
+                              else return x;
+                          }
+                      }
+
+                      double parseTerm() {
+                          double x = parseFactor();
+                          while (true) {
+                              if (eat('*')) x *= parseFactor();
+                              else if (eat('/')) x /= parseFactor();
+                              else return x;
+                          }
+                      }
+
+                      double parseFactor() {
+                          if (eat('+')) return parseFactor();
+                          if (eat('-')) return -parseFactor();
+
+                          double x;
+                          int start = pos;
+
+                          if (eat('(')) {
+                              x = parseExpression();
+                              eat(')');
+                          } else {
+                              while ((ch >= '0' && ch <= '9') || ch == '.') next();
+                              x = Double.parseDouble(expression.substring(start, pos));
+                          }
+
+                          return x;
+                      }
+                  }.parse();
+              }
+
+              void showConverter() {
+                  base();
+
+                  TextView title = text("Converter", 28);
+                  root.addView(title, new LinearLayout.LayoutParams(-1, 70));
+
+                  String[] types = {"Length", "Weight", "Temperature", "Area", "Volume"};
+
+                  for (String type : types) {
+                      Button b = button(type);
+                      b.setOnClickListener(v -> convert(type));
+                      root.addView(b, new LinearLayout.LayoutParams(-1, 65));
+                  }
+
+                  Button back = button("← Calculator");
+                  back.setOnClickListener(v -> showCalculator());
+                  root.addView(back, new LinearLayout.LayoutParams(-1, 65));
+              }
+
+              void convert(String type) {
+                  base();
+
+                  root.addView(text(type, 26),
+                          new LinearLayout.LayoutParams(-1, 70));
+
+                  EditText input = new EditText(this);
+                  input.setHint("Enter value");
+                  input.setTextColor(Color.WHITE);
+                  input.setHintTextColor(Color.GRAY);
+                  root.addView(input, new LinearLayout.LayoutParams(-1, 70));
+
+                  Button convert = button("Convert");
+                  root.addView(convert, new LinearLayout.LayoutParams(-1, 65));
+
+                  TextView result = text("", 22);
+                  root.addView(result, new LinearLayout.LayoutParams(-1, 80));
+
+                  convert.setOnClickListener(v -> {
+                      try {
+                          double x = Double.parseDouble(input.getText().toString());
+                          String r;
+
+                          if (type.equals("Length"))
+                              r = x + " m = " + (x * 3.28084) + " ft";
+                          else if (type.equals("Weight"))
+                              r = x + " kg = " + (x * 2.20462) + " lb";
+                          else if (type.equals("Temperature"))
+                              r = x + " °C = " + ((x * 9 / 5) + 32) + " °F";
+                          else if (type.equals("Area"))
+                              r = x + " m² = " + (x * 10.7639) + " ft²";
+                          else
+                              r = x + " L = " + (x * 0.264172) + " US gal";
+
+                          result.setText(r);
+                      } catch (Exception e) {
+                          result.setText("Invalid value");
+                      }
+                  });
+
+                  Button back = button("← Converter");
+                  back.setOnClickListener(v -> showConverter());
+                  root.addView(back, new LinearLayout.LayoutParams(-1, 65));
+              }
+          }
+          EOF
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+
+      - name: Build APK
+        run: gradle --no-daemon :app:assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: BlueCalc-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
