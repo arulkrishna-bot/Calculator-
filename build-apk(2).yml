@@ -1,48 +1,3414 @@
-name: Build BlueCalc APK
-on:
-  workflow_dispatch:
-  push:
-    branches: ["main", "master"]
-permissions:
-  contents: read
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Create Android project
-        shell: bash
-        run: |
-          set -e
-          mkdir -p .
-          echo 'cGx1Z2luTWFuYWdlbWVudCB7IHJlcG9zaXRvcmllcyB7IGdvb2dsZSgpOyBtYXZlbkNlbnRyYWwoKTsgZ3JhZGxlUGx1Z2luUG9ydGFsKCkgfSB9CmRlcGVuZGVuY3lSZXNvbHV0aW9uTWFuYWdlbWVudCB7IHJlcG9zaXRvcmllc01vZGUuc2V0KFJlcG9zaXRvcmllc01vZGUuRkFJTF9PTl9QUk9KRUNUX1JFUE9TKTsgcmVwb3NpdG9yaWVzIHsgZ29vZ2xlKCk7IG1hdmVuQ2VudHJhbCgpIH0gfQpyb290UHJvamVjdC5uYW1lPSdCbHVlQ2FsYyc7IGluY2x1ZGUgJzphcHAnIA==' | base64 -d > 'settings.gradle'
-          mkdir -p .
-          echo 'cGx1Z2lucyB7IGlkICdjb20uYW5kcm9pZC5hcHBsaWNhdGlvbicgdmVyc2lvbiAnOC42LjEnIGFwcGx5IGZhbHNlIH0=' | base64 -d > 'build.gradle'
-          mkdir -p .
-          echo 'b3JnLmdyYWRsZS5qdm1hcmdzPS1YbXgyMDQ4bSAtRGZpbGUuZW5jb2Rpbmc9VVRGLTgKYW5kcm9pZC51c2VBbmRyb2lkWD10cnVlCmFuZHJvaWQubm9uVHJhbnNpdGl2ZVJDbGFzcz10cnVl' | base64 -d > 'gradle.properties'
-          mkdir -p 'app'
-          echo 'cGx1Z2lucyB7IGlkICdjb20uYW5kcm9pZC5hcHBsaWNhdGlvbicgfQphbmRyb2lkIHsgbmFtZXNwYWNlICdjb20uZXhhbXBsZS5ibHVlY2FsYyc7IGNvbXBpbGVTZGsgMzUKZGVmYXVsdENvbmZpZyB7IGFwcGxpY2F0aW9uSWQgJ2NvbS5leGFtcGxlLmJsdWVjYWxjJzsgbWluU2RrIDIzOyB0YXJnZXRTZGsgMzU7IHZlcnNpb25Db2RlIDE7IHZlcnNpb25OYW1lICcxLjAnIH0KfQ==' | base64 -d > 'app/build.gradle'
-          mkdir -p 'app/src/main'
-          echo 'PG1hbmlmZXN0IHhtbG5zOmFuZHJvaWQ9Imh0dHA6Ly9zY2hlbWFzLmFuZHJvaWQuY29tL2Fway9yZXMvYW5kcm9pZCI+CjxhcHBsaWNhdGlvbiBhbmRyb2lkOnRoZW1lPSJAc3R5bGUvQXBwVGhlbWUiIGFuZHJvaWQ6bGFiZWw9IkJsdWVDYWxjIiBhbmRyb2lkOmFsbG93QmFja3VwPSJ0cnVlIiBhbmRyb2lkOnN1cHBvcnRzUnRsPSJ0cnVlIj4KPGFjdGl2aXR5IGFuZHJvaWQ6bmFtZT0iLk1haW5BY3Rpdml0eSIgYW5kcm9pZDpzY3JlZW5PcmllbnRhdGlvbj0icG9ydHJhaXQiIGFuZHJvaWQ6ZXhwb3J0ZWQ9InRydWUiPgo8aW50ZW50LWZpbHRlcj48YWN0aW9uIGFuZHJvaWQ6bmFtZT0iYW5kcm9pZC5pbnRlbnQuYWN0aW9uLk1BSU4iLz48Y2F0ZWdvcnkgYW5kcm9pZDpuYW1lPSJhbmRyb2lkLmludGVudC5jYXRlZ29yeS5MQVVOQ0hFUiIvPjwvaW50ZW50LWZpbHRlcj4KPC9hY3Rpdml0eT48L2FwcGxpY2F0aW9uPjwvbWFuaWZlc3Q+' | base64 -d > 'app/src/main/AndroidManifest.xml'
-          mkdir -p 'app/src/main/res/values'
-          echo 'PHJlc291cmNlcz48c3R5bGUgbmFtZT0iQXBwVGhlbWUiIHBhcmVudD0iYW5kcm9pZDpzdHlsZS9UaGVtZS5NYXRlcmlhbC5MaWdodC5Ob0FjdGlvbkJhciI+CjxpdGVtIG5hbWU9ImFuZHJvaWQ6Zm9udEZhbWlseSI+c2FuczwvaXRlbT48aXRlbSBuYW1lPSJhbmRyb2lkOmNvbG9yQWNjZW50Ij4jMTE4QkVBPC9pdGVtPgo8aXRlbSBuYW1lPSJhbmRyb2lkOm5hdmlnYXRpb25CYXJDb2xvciI+I0UwRjRGRjwvaXRlbT48aXRlbSBuYW1lPSJhbmRyb2lkOnN0YXR1c0JhckNvbG9yIj4jRTBGNEZGPC9pdGVtPjxpdGVtIG5hbWU9ImFuZHJvaWQ6d2luZG93TGlnaHRTdGF0dXNCYXIiPnRydWU8L2l0ZW0+Cjwvc3R5bGU+PC9yZXNvdXJjZXM+' | base64 -d > 'app/src/main/res/values/styles.xml'
-          mkdir -p 'app/src/main/java/com/example/bluecalc'
-          echo 'cGFja2FnZSBjb20uZXhhbXBsZS5ibHVlY2FsYzsKCmltcG9ydCBhbmRyb2lkLmFwcC5BY3Rpdml0eTsKaW1wb3J0IGFuZHJvaWQub3MuQnVuZGxlOwppbXBvcnQgYW5kcm9pZC5ncmFwaGljcy5Db2xvcjsKaW1wb3J0IGFuZHJvaWQuZ3JhcGhpY3MuZHJhd2FibGUuR3JhZGllbnREcmF3YWJsZTsKaW1wb3J0IGFuZHJvaWQudmlldy5HcmF2aXR5OwppbXBvcnQgYW5kcm9pZC52aWV3LlZpZXc7CmltcG9ydCBhbmRyb2lkLndpZGdldC4qOwppbXBvcnQgamF2YS50ZXh0LkRlY2ltYWxGb3JtYXQ7CmltcG9ydCBqYXZhLnRleHQuU2ltcGxlRGF0ZUZvcm1hdDsKaW1wb3J0IGphdmEudXRpbC4qOwoKcHVibGljIGNsYXNzIE1haW5BY3Rpdml0eSBleHRlbmRzIEFjdGl2aXR5IHsKICAgIExpbmVhckxheW91dCByb290LCBjYWxjUGFuZWwsIGNvbnZQYW5lbDsKICAgIFRleHRWaWV3IGRpc3BsYXksIGRhdGVUZXh0OwogICAgU3RyaW5nIGV4cHIgPSAiIjsKICAgIGZpbmFsIERlY2ltYWxGb3JtYXQgZGYgPSBuZXcgRGVjaW1hbEZvcm1hdCgiMC4jIyMjIyMjIyIpOwogICAgZmluYWwgaW50IEJMVUUgPSBDb2xvci5yZ2IoMTcsMTM5LDIzNCk7CiAgICBmaW5hbCBpbnQgREFSSyA9IENvbG9yLnJnYigxOSwzMSw0Mik7CiAgICBmaW5hbCBpbnQgUEFMRSA9IENvbG9yLnJnYigyMjQsMjQ0LDI1NSk7CgogICAgQE92ZXJyaWRlIHB1YmxpYyB2b2lkIG9uQ3JlYXRlKEJ1bmRsZSBiKSB7IHN1cGVyLm9uQ3JlYXRlKGIpOyBidWlsZCgpOyB9CgogICAgVGV4dFZpZXcgdHYoU3RyaW5nIHMsZmxvYXQgc3AsaW50IGMpewogICAgICAgIFRleHRWaWV3IHQ9bmV3IFRleHRWaWV3KHRoaXMpOyB0LnNldFRleHQocyk7IHQuc2V0VGV4dFNpemUoc3ApOyB0LnNldFRleHRDb2xvcihjKTsKICAgICAgICB0LnNldEdyYXZpdHkoR3Jhdml0eS5DRU5URVJfVkVSVElDQUwpOyByZXR1cm4gdDsKICAgIH0KICAgIEdyYWRpZW50RHJhd2FibGUgYmcoaW50IGMsZmxvYXQgcil7IEdyYWRpZW50RHJhd2FibGUgZz1uZXcgR3JhZGllbnREcmF3YWJsZSgpOyBnLnNldENvbG9yKGMpOyBnLnNldENvcm5lclJhZGl1cyhyKTsgcmV0dXJuIGc7IH0KICAgIEJ1dHRvbiBidG4oU3RyaW5nIHMsaW50IGMsaW50IHRjKXsKICAgICAgICBCdXR0b24gYj1uZXcgQnV0dG9uKHRoaXMpOyBiLnNldFRleHQocyk7IGIuc2V0VGV4dFNpemUoMTcpOyBiLnNldFRleHRDb2xvcih0Yyk7CiAgICAgICAgYi5zZXRBbGxDYXBzKGZhbHNlKTsgYi5zZXRHcmF2aXR5KEdyYXZpdHkuQ0VOVEVSKTsgYi5zZXRCYWNrZ3JvdW5kKGJnKGMsMjIpKTsgYi5zZXRQYWRkaW5nKDAsMCwwLDApOyByZXR1cm4gYjsKICAgIH0KCiAgICB2b2lkIGJ1aWxkKCl7CiAgICAgICAgcm9vdD1uZXcgTGluZWFyTGF5b3V0KHRoaXMpOyByb290LnNldE9yaWVudGF0aW9uKExpbmVhckxheW91dC5WRVJUSUNBTCk7IHJvb3Quc2V0UGFkZGluZygxOCwxOCwxOCwxMik7CiAgICAgICAgcm9vdC5zZXRCYWNrZ3JvdW5kQ29sb3IoUEFMRSk7IHNldENvbnRlbnRWaWV3KHJvb3QpOwoKICAgICAgICBMaW5lYXJMYXlvdXQgaGVhZD1uZXcgTGluZWFyTGF5b3V0KHRoaXMpOyBoZWFkLnNldEdyYXZpdHkoR3Jhdml0eS5DRU5URVJfVkVSVElDQUwpOwogICAgICAgIFRleHRWaWV3IHRpdGxlPXR2KCJCbHVlQ2FsYyIsMjUsREFSSyk7IHRpdGxlLnNldFR5cGVmYWNlKG51bGwsMSk7CiAgICAgICAgaGVhZC5hZGRWaWV3KHRpdGxlLG5ldyBMaW5lYXJMYXlvdXQuTGF5b3V0UGFyYW1zKDAsNjAsMSkpOwogICAgICAgIGRhdGVUZXh0PXR2KCIiLDEzLERBUkspOyBkYXRlVGV4dC5zZXRHcmF2aXR5KEdyYXZpdHkuUklHSFR8R3Jhdml0eS5DRU5URVJfVkVSVElDQUwpOwogICAgICAgIGhlYWQuYWRkVmlldyhkYXRlVGV4dCxuZXcgTGluZWFyTGF5b3V0LkxheW91dFBhcmFtcygxOTAsNjApKTsgcm9vdC5hZGRWaWV3KGhlYWQpOyB1cGRhdGVEYXRlKCk7CgogICAgICAgIExpbmVhckxheW91dCB0YWJzPW5ldyBMaW5lYXJMYXlvdXQodGhpcyk7CiAgICAgICAgQnV0dG9uIGN0PWJ0bigiQ2FsY3VsYXRvciIsQkxVRSxDb2xvci5XSElURSksIHZ0PWJ0bigiQ29udmVydGVyIixDb2xvci5XSElURSxEQVJLKTsKICAgICAgICB0YWJzLmFkZFZpZXcoY3QsbmV3IExpbmVhckxheW91dC5MYXlvdXRQYXJhbXMoMCw1MiwxKSk7IHRhYnMuYWRkVmlldyh2dCxuZXcgTGluZWFyTGF5b3V0LkxheW91dFBhcmFtcygwLDUyLDEpKTsKICAgICAgICByb290LmFkZFZpZXcodGFicyk7CgogICAgICAgIGNhbGNQYW5lbD1uZXcgTGluZWFyTGF5b3V0KHRoaXMpOyBjYWxjUGFuZWwuc2V0T3JpZW50YXRpb24oTGluZWFyTGF5b3V0LlZFUlRJQ0FMKTsgY2FsY1BhbmVsLnNldFBhZGRpbmcoOCw4LDgsMCk7CiAgICAgICAgcm9vdC5hZGRWaWV3KGNhbGNQYW5lbCxuZXcgTGluZWFyTGF5b3V0LkxheW91dFBhcmFtcygtMSwwLDEpKTsKCiAgICAgICAgTGluZWFyTGF5b3V0IHNjcmVlbj1uZXcgTGluZWFyTGF5b3V0KHRoaXMpOyBzY3JlZW4uc2V0T3JpZW50YXRpb24oTGluZWFyTGF5b3V0LlZFUlRJQ0FMKTsgc2NyZWVuLnNldEdyYXZpdHkoR3Jhdml0eS5CT1RUT018R3Jhdml0eS5SSUdIVCk7IHNjcmVlbi5zZXRQYWRkaW5nKDIwLDE2LDIwLDE2KTsgc2NyZWVuLnNldEJhY2tncm91bmQoYmcoREFSSywzNCkpOwogICAgICAgIFRleHRWaWV3IGhpbnQ9dHYoIkV4cHJlc3Npb24iLDEyLENvbG9yLkxUR1JBWSk7IGhpbnQuc2V0R3Jhdml0eShHcmF2aXR5LlJJR0hUKTsgc2NyZWVuLmFkZFZpZXcoaGludCxuZXcgTGluZWFyTGF5b3V0LkxheW91dFBhcmFtcygtMSwyOCkpOwogICAgICAgIGRpc3BsYXk9dHYoIjAiLDM0LENvbG9yLldISVRFKTsgZGlzcGxheS5zZXRHcmF2aXR5KEdyYXZpdHkuUklHSFR8R3Jhdml0eS5DRU5URVJfVkVSVElDQUwpOyBzY3JlZW4uYWRkVmlldyhkaXNwbGF5LG5ldyBMaW5lYXJMYXlvdXQuTGF5b3V0UGFyYW1zKC0xLDY0KSk7CiAgICAgICAgY2FsY1BhbmVsLmFkZFZpZXcoc2NyZWVuLG5ldyBMaW5lYXJMYXlvdXQuTGF5b3V0UGFyYW1zKC0xLDAsMS4yNWYpKTsKCiAgICAgICAgR3JpZExheW91dCBncmlkPW5ldyBHcmlkTGF5b3V0KHRoaXMpOyBncmlkLnNldENvbHVtbkNvdW50KDQpOwogICAgICAgIFN0cmluZ1tdIGtzPXsiQUMiLCLijKsiLCLDtyIsIsOXIiwiNyIsIjgiLCI5Iiwi4oiSIiwiNCIsIjUiLCI2IiwiKyIsIjEiLCIyIiwiMyIsIj0iLCIwIiwiKCIsIikiLCIuIn07CiAgICAgICAgZm9yKFN0cmluZyBrOmtzKXsKICAgICAgICAgICAgYm9vbGVhbiBvcD1rLm1hdGNoZXMoIlvDt8OX4oiSKz1dIik7CiAgICAgICAgICAgIEJ1dHRvbiBiPWJ0bihrLG9wP0JMVUU6Q29sb3IuV0hJVEUsb3A/Q29sb3IuV0hJVEU6REFSSyk7CiAgICAgICAgICAgIEdyaWRMYXlvdXQuTGF5b3V0UGFyYW1zIGxwPW5ldyBHcmlkTGF5b3V0LkxheW91dFBhcmFtcygpOwogICAgICAgICAgICBscC53aWR0aD0wOyBscC5oZWlnaHQ9NTg7IGxwLmNvbHVtblNwZWM9R3JpZExheW91dC5zcGVjKEdyaWRMYXlvdXQuVU5ERUZJTkVELDEsMWYpOyBscC5zZXRNYXJnaW5zKDQsNCw0LDQpOwogICAgICAgICAgICBncmlkLmFkZFZpZXcoYixscCk7IGIuc2V0T25DbGlja0xpc3RlbmVyKHYtPnByZXNzKCgoQnV0dG9uKXYpLmdldFRleHQoKS50b1N0cmluZygpKSk7CiAgICAgICAgfQogICAgICAgIGNhbGNQYW5lbC5hZGRWaWV3KGdyaWQsbmV3IExpbmVhckxheW91dC5MYXlvdXRQYXJhbXMoLTEsMCwxLjY1ZikpOwoKICAgICAgICBjb252UGFuZWw9Y29udmVydGVyKCk7IGNvbnZQYW5lbC5zZXRWaXNpYmlsaXR5KFZpZXcuR09ORSk7IHJvb3QuYWRkVmlldyhjb252UGFuZWwsbmV3IExpbmVhckxheW91dC5MYXlvdXRQYXJhbXMoLTEsMCwyLjlmKSk7CiAgICAgICAgY3Quc2V0T25DbGlja0xpc3RlbmVyKHYtPntjYWxjUGFuZWwuc2V0VmlzaWJpbGl0eShWaWV3LlZJU0lCTEUpO2NvbnZQYW5lbC5zZXRWaXNpYmlsaXR5KFZpZXcuR09ORSk7Y3Quc2V0QmFja2dyb3VuZChiZyhCTFVFLDIyKSk7Y3Quc2V0VGV4dENvbG9yKENvbG9yLldISVRFKTt2dC5zZXRCYWNrZ3JvdW5kKGJnKENvbG9yLldISVRFLDIyKSk7dnQuc2V0VGV4dENvbG9yKERBUkspO30pOwogICAgICAgIHZ0LnNldE9uQ2xpY2tMaXN0ZW5lcih2LT57Y2FsY1BhbmVsLnNldFZpc2liaWxpdHkoVmlldy5HT05FKTtjb252UGFuZWwuc2V0VmlzaWJpbGl0eShWaWV3LlZJU0lCTEUpO3Z0LnNldEJhY2tncm91bmQoYmcoQkxVRSwyMikpO3Z0LnNldFRleHRDb2xvcihDb2xvci5XSElURSk7Y3Quc2V0QmFja2dyb3VuZChiZyhDb2xvci5XSElURSwyMikpO2N0LnNldFRleHRDb2xvcihEQVJLKTt9KTsKICAgIH0KCiAgICB2b2lkIHVwZGF0ZURhdGUoKXsgZGF0ZVRleHQuc2V0VGV4dChuZXcgU2ltcGxlRGF0ZUZvcm1hdCgiRUVFRSwgZGQgTU1NTSB5eXl5IixuZXcgTG9jYWxlKCJ0YSIsIklOIikpLmZvcm1hdChuZXcgRGF0ZSgpKSk7IH0KCiAgICB2b2lkIHByZXNzKFN0cmluZyBrKXsKICAgICAgICBpZihrLmVxdWFscygiQUMiKSl7ZXhwcj0iIjtkaXNwbGF5LnNldFRleHQoIjAiKTtyZXR1cm47fQogICAgICAgIGlmKGsuZXF1YWxzKCLijKsiKSl7aWYoIWV4cHIuaXNFbXB0eSgpKWV4cHI9ZXhwci5zdWJzdHJpbmcoMCxleHByLmxlbmd0aCgpLTEpO2Rpc3BsYXkuc2V0VGV4dChleHByLmlzRW1wdHkoKT8iMCI6ZXhwcik7cmV0dXJuO30KICAgICAgICBpZihrLmVxdWFscygiPSIpKXt0cnl7ZG91YmxlIHY9bmV3IFBhcnNlcihleHByKS5wYXJzZSgpO2Rpc3BsYXkuc2V0VGV4dChkZi5mb3JtYXQodikpO2V4cHI9ZGYuZm9ybWF0KHYpO31jYXRjaChFeGNlcHRpb24gZSl7ZGlzcGxheS5zZXRUZXh0KCJFcnJvciIpO31yZXR1cm47fQogICAgICAgIGV4cHIrPWsucmVwbGFjZSgiw7ciLCIvIikucmVwbGFjZSgiw5ciLCIqIikucmVwbGFjZSgi4oiSIiwiLSIpOyBkaXNwbGF5LnNldFRleHQoZXhwcik7CiAgICB9CgogICAgTGluZWFyTGF5b3V0IGNvbnZlcnRlcigpewogICAgICAgIExpbmVhckxheW91dCBwPW5ldyBMaW5lYXJMYXlvdXQodGhpcyk7cC5zZXRPcmllbnRhdGlvbihMaW5lYXJMYXlvdXQuVkVSVElDQUwpO3Auc2V0UGFkZGluZyg4LDgsOCwwKTsKICAgICAgICBUZXh0VmlldyBoPXR2KCJVbml0IENvbnZlcnRlciIsMjIsREFSSyk7aC5zZXRUeXBlZmFjZShudWxsLDEpO3AuYWRkVmlldyhoLG5ldyBMaW5lYXJMYXlvdXQuTGF5b3V0UGFyYW1zKC0xLDUyKSk7CiAgICAgICAgU3Bpbm5lciB0eXBlPW5ldyBTcGlubmVyKHRoaXMpO1N0cmluZ1tdIHR5cGVzPXsiTGVuZ3RoIiwiV2VpZ2h0IiwiVGVtcGVyYXR1cmUiLCJBcmVhIiwiVm9sdW1lIn07CiAgICAgICAgdHlwZS5zZXRBZGFwdGVyKG5ldyBBcnJheUFkYXB0ZXI8U3RyaW5nPih0aGlzLGFuZHJvaWQuUi5sYXlvdXQuc2ltcGxlX3NwaW5uZXJfZHJvcGRvd25faXRlbSx0eXBlcykpO3AuYWRkVmlldyh0eXBlLG5ldyBMaW5lYXJMYXlvdXQuTGF5b3V0UGFyYW1zKC0xLDUyKSk7CiAgICAgICAgTGluZWFyTGF5b3V0IHJvdz1uZXcgTGluZWFyTGF5b3V0KHRoaXMpO0VkaXRUZXh0IGlucHV0PW5ldyBFZGl0VGV4dCh0aGlzKTtpbnB1dC5zZXRUZXh0KCIxIik7aW5wdXQuc2V0VGV4dFNpemUoMjApO2lucHV0LnNldElucHV0VHlwZSgyfDgxOTIpOwogICAgICAgIFNwaW5uZXIgZnJvbT1uZXcgU3Bpbm5lcih0aGlzKSx0bz1uZXcgU3Bpbm5lcih0aGlzKTsKICAgICAgICByb3cuYWRkVmlldyhpbnB1dCxuZXcgTGluZWFyTGF5b3V0LkxheW91dFBhcmFtcygwLDU4LDEpKTtyb3cuYWRkVmlldyhmcm9tLG5ldyBMaW5lYXJMYXlvdXQuTGF5b3V0UGFyYW1zKDAsNTgsMSkpO3Jvdy5hZGRWaWV3KHRvLG5ldyBMaW5lYXJMYXlvdXQuTGF5b3V0UGFyYW1zKDAsNTgsMSkpO3AuYWRkVmlldyhyb3cpOwogICAgICAgIFRleHRWaWV3IHJlc3VsdD10digiUmVzdWx0OiDigJQiLDIwLERBUkspO3Jlc3VsdC5zZXRQYWRkaW5nKDEwLDEwLDEwLDEwKTtyZXN1bHQuc2V0QmFja2dyb3VuZChiZyhDb2xvci5XSElURSwyNikpO3AuYWRkVmlldyhyZXN1bHQsbmV3IExpbmVhckxheW91dC5MYXlvdXRQYXJhbXMoLTEsOTApKTsKICAgICAgICBSdW5uYWJsZSBmaWxsPSgpLT57U3RyaW5nW10gdTtpbnQgdD10eXBlLmdldFNlbGVjdGVkSXRlbVBvc2l0aW9uKCk7aWYodD09MSl1PW5ldyBTdHJpbmdbXXsia2ciLCJnIiwibGIiLCJveiJ9O2Vsc2UgaWYodD09Mil1PW5ldyBTdHJpbmdbXXsiwrBDIiwiwrBGIiwiSyJ9O2Vsc2UgaWYodD09Myl1PW5ldyBTdHJpbmdbXXsibcKyIiwia23CsiIsImZ0wrIiLCJjbcKyIiwiYWNyZSJ9O2Vsc2UgaWYodD09NCl1PW5ldyBTdHJpbmdbXXsiTCIsIm1MIiwibcKzIiwiZnTCsyJ9O2Vsc2UgdT1uZXcgU3RyaW5nW117Im0iLCJrbSIsImNtIiwiZnQiLCJpbiIsIm1pIn07QXJyYXlBZGFwdGVyPFN0cmluZz5hPW5ldyBBcnJheUFkYXB0ZXI8U3RyaW5nPih0aGlzLGFuZHJvaWQuUi5sYXlvdXQuc2ltcGxlX3NwaW5uZXJfZHJvcGRvd25faXRlbSx1KTtmcm9tLnNldEFkYXB0ZXIoYSk7dG8uc2V0QWRhcHRlcihhKTtpZih1Lmxlbmd0aD4xKXRvLnNldFNlbGVjdGlvbigxKTt9OwogICAgICAgIHR5cGUuc2V0T25JdGVtU2VsZWN0ZWRMaXN0ZW5lcihuZXcgYW5kcm9pZC53aWRnZXQuQWRhcHRlclZpZXcuT25JdGVtU2VsZWN0ZWRMaXN0ZW5lcigpe3B1YmxpYyB2b2lkIG9uTm90aGluZ1NlbGVjdGVkKGFuZHJvaWQud2lkZ2V0LkFkYXB0ZXJWaWV3PD8+eCl7fXB1YmxpYyB2b2lkIG9uSXRlbVNlbGVjdGVkKGFuZHJvaWQud2lkZ2V0LkFkYXB0ZXJWaWV3PD8+eCxWaWV3IHYsaW50IHAsbG9uZyBpZCl7ZmlsbC5ydW4oKTt9fSk7CiAgICAgICAgYW5kcm9pZC53aWRnZXQuQWRhcHRlclZpZXcuT25JdGVtU2VsZWN0ZWRMaXN0ZW5lciBvbD1uZXcgYW5kcm9pZC53aWRnZXQuQWRhcHRlclZpZXcuT25JdGVtU2VsZWN0ZWRMaXN0ZW5lcigpe3B1YmxpYyB2b2lkIG9uTm90aGluZ1NlbGVjdGVkKGFuZHJvaWQud2lkZ2V0LkFkYXB0ZXJWaWV3PD8+eCl7fXB1YmxpYyB2b2lkIG9uSXRlbVNlbGVjdGVkKGFuZHJvaWQud2lkZ2V0LkFkYXB0ZXJWaWV3PD8+eCxWaWV3IHYsaW50IHAsbG9uZyBpZCl7Y29udmVydChpbnB1dCxmcm9tLHRvLHR5cGUscmVzdWx0KTt9fTsKICAgICAgICBmcm9tLnNldE9uSXRlbVNlbGVjdGVkTGlzdGVuZXIob2wpO3RvLnNldE9uSXRlbVNlbGVjdGVkTGlzdGVuZXIob2wpOwogICAgICAgIGlucHV0LmFkZFRleHRDaGFuZ2VkTGlzdGVuZXIobmV3IGFuZHJvaWQudGV4dC5UZXh0V2F0Y2hlcigpe3B1YmxpYyB2b2lkIGJlZm9yZVRleHRDaGFuZ2VkKENoYXJTZXF1ZW5jZSBzLGludCBzdCxpbnQgYyxpbnQgYSl7fXB1YmxpYyB2b2lkIG9uVGV4dENoYW5nZWQoQ2hhclNlcXVlbmNlIHMsaW50IHN0LGludCBiLGludCBjKXtjb252ZXJ0KGlucHV0LGZyb20sdG8sdHlwZSxyZXN1bHQpO31wdWJsaWMgdm9pZCBhZnRlclRleHRDaGFuZ2VkKGFuZHJvaWQudGV4dC5FZGl0YWJsZSBlKXt9fSk7CiAgICAgICAgZmlsbC5ydW4oKTtyZXR1cm4gcDsKICAgIH0KICAgIHZvaWQgY29udmVydChFZGl0VGV4dCBpbixTcGlubmVyIGYsU3Bpbm5lciB0LFNwaW5uZXIgdHksVGV4dFZpZXcgcil7CiAgICAgICAgdHJ5e2RvdWJsZSB4PURvdWJsZS5wYXJzZURvdWJsZShpbi5nZXRUZXh0KCkudG9TdHJpbmcoKSk7aW50IGs9dHkuZ2V0U2VsZWN0ZWRJdGVtUG9zaXRpb24oKTtTdHJpbmcgYT1mLmdldFNlbGVjdGVkSXRlbSgpLnRvU3RyaW5nKCksYj10LmdldFNlbGVjdGVkSXRlbSgpLnRvU3RyaW5nKCk7ZG91YmxlIHk7CiAgICAgICAgaWYoaz09Mil7ZG91YmxlIGM9YS5lcXVhbHMoIsKwRiIpPyh4LTMyKSo1Lzk6YS5lcXVhbHMoIksiKT94LTI3My4xNTp4O3k9Yi5lcXVhbHMoIsKwRiIpP2MqOS81KzMyOmIuZXF1YWxzKCJLIik/YysyNzMuMTU6Yzt9CiAgICAgICAgZWxzZSB7ZG91YmxlW10gej1rPT0wP25ldyBkb3VibGVbXXsxLDEwMDAsLjAxLC4zMDQ4LC4wMjU0LDE2MDkuMzQ0fTprPT0xP25ldyBkb3VibGVbXXsxMDAwLDEsNDUzLjU5MjM3LDI4LjM0OTUyMzEyNX06az09Mz9uZXcgZG91YmxlW117MSwxZTYsLjA5MjkwMzA0LC4wMDAxLDQwNDYuODU2NDIyNH06bmV3IGRvdWJsZVtdezEsLjAwMSwxMDAwLDI4LjMxNjg0NjU5Mn07aW50IGk9Zi5nZXRTZWxlY3RlZEl0ZW1Qb3NpdGlvbigpLGo9dC5nZXRTZWxlY3RlZEl0ZW1Qb3NpdGlvbigpO3k9eCp6W2ldL3pbal07fQogICAgICAgIHIuc2V0VGV4dCgiUmVzdWx0OiAiK2RmLmZvcm1hdCh5KSsiICIrYik7fWNhdGNoKEV4Y2VwdGlvbiBlKXtyLnNldFRleHQoIlJlc3VsdDog4oCUIik7fQogICAgfQogICAgc3RhdGljIGNsYXNzIFBhcnNlcnsKICAgICAgICBmaW5hbCBTdHJpbmcgcztpbnQgcD0wO1BhcnNlcihTdHJpbmcgeCl7cz14O312b2lkIHNwKCl7d2hpbGUocDxzLmxlbmd0aCgpJiZDaGFyYWN0ZXIuaXNXaGl0ZXNwYWNlKHMuY2hhckF0KHApKSlwKys7fQogICAgICAgIGRvdWJsZSBwYXJzZSgpe2RvdWJsZSB2PWV4KCk7c3AoKTtpZihwPHMubGVuZ3RoKCkpdGhyb3cgbmV3IFJ1bnRpbWVFeGNlcHRpb24oKTtyZXR1cm4gdjt9CiAgICAgICAgZG91YmxlIGV4KCl7ZG91YmxlIHY9dGUoKTt3aGlsZSh0cnVlKXtzcCgpO2lmKHA+PXMubGVuZ3RoKCkpcmV0dXJuIHY7Y2hhciBjPXMuY2hhckF0KHApO2lmKGM9PScrJyl7cCsrO3YrPXRlKCk7fWVsc2UgaWYoYz09Jy0nKXtwKys7di09dGUoKTt9ZWxzZSByZXR1cm4gdjt9fQogICAgICAgIGRvdWJsZSB0ZSgpe2RvdWJsZSB2PWZhKCk7d2hpbGUodHJ1ZSl7c3AoKTtpZihwPj1zLmxlbmd0aCgpKXJldHVybiB2O2NoYXIgYz1zLmNoYXJBdChwKTtpZihjPT0nKicpe3ArKzt2Kj1mYSgpO31lbHNlIGlmKGM9PScvJyl7cCsrO3YvPWZhKCk7fWVsc2UgaWYoYz09JyUnKXtwKys7diU9ZmEoKTt9ZWxzZSByZXR1cm4gdjt9fQogICAgICAgIGRvdWJsZSBmYSgpe3NwKCk7aWYocDxzLmxlbmd0aCgpJiZzLmNoYXJBdChwKT09Jy0nKXtwKys7cmV0dXJuLWZhKCk7fWlmKHA8cy5sZW5ndGgoKSYmcy5jaGFyQXQocCk9PScrJyl7cCsrO3JldHVybiBmYSgpO31pZihwPHMubGVuZ3RoKCkmJnMuY2hhckF0KHApPT0nKCcpe3ArKztkb3VibGUgdj1leCgpO3NwKCk7aWYocD49cy5sZW5ndGgoKXx8cy5jaGFyQXQocCkhPScpJyl0aHJvdyBuZXcgUnVudGltZUV4Y2VwdGlvbigpO3ArKztyZXR1cm4gdjt9aW50IHE9cDt3aGlsZShwPHMubGVuZ3RoKCkmJihDaGFyYWN0ZXIuaXNEaWdpdChzLmNoYXJBdChwKSl8fHMuY2hhckF0KHApPT0nLicpKXArKztpZihxPT1wKXRocm93IG5ldyBSdW50aW1lRXhjZXB0aW9uKCk7cmV0dXJuIERvdWJsZS5wYXJzZURvdWJsZShzLnN1YnN0cmluZyhxLHApKTt9CiAgICB9Cn0K' | base64 -d > 'app/src/main/java/com/example/bluecalc/MainActivity.java'
-      - name: Set up Java 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.7'
-      - name: Build APK
-        run: gradle --no-daemon :app:assembleDebug
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: BlueCalc-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
+package com.arul.blueblackcalculator
+
+import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Typeface
+import android.net.Uri
+import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
+import android.provider.Settings
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Backspace
+import androidx.compose.material.icons.filled.Calculate
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material.icons.filled.Wallpaper
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import java.io.File
+import java.io.FileOutputStream
+import java.text.DecimalFormat
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
+import kotlin.math.abs
+import kotlin.math.ceil
+import kotlin.math.cos
+import kotlin.math.floor
+import kotlin.math.log10
+import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
+import kotlin.math.tan
+
+// ============================================================
+// BLUE BLACK CALCULATOR
+// SINGLE FILE COMPLETE APP
+// ============================================================
+
+private val Blue = Color(0xFF1687FF)
+private val DeepBlue = Color(0xFF0757B5)
+private val Black = Color(0xFF05070B)
+private val DarkCard = Color(0xFF0D1118)
+private val DarkButton = Color(0xFF151B25)
+private val LightBg = Color(0xFFF3F7FC)
+private val LightCard = Color.White
+private val Green = Color(0xFF21C77A)
+private val Red = Color(0xFFFF5252)
+private val Orange = Color(0xFFFFA726)
+
+private enum class Page {
+    CALCULATOR,
+    HISTORY,
+    CONVERTER,
+    SETTINGS
+}
+
+private enum class ConverterType(
+    val title: String,
+    val icon: String
+) {
+    CURRENCY("Currency", "💱"),
+    LENGTH("Length", "📏"),
+    MASS("Mass", "⚖"),
+    AREA("Area", "▣"),
+    TIME("Time", "⏱"),
+    FINANCE("Finance", "💰"),
+    DATA("Data", "💾"),
+    DATE("Date", "📅"),
+    DISCOUNT("Discount", "🏷"),
+    VOLUME("Volume", "🧪"),
+    NUMERAL("Numeral System", "🔢"),
+    SPEED("Speed", "🚗"),
+    TEMPERATURE("Temperature", "🌡"),
+    GST("GST", "₹"),
+    BMI("BMI", "⚕")
+}
+
+private data class HistoryItem(
+    val expression: String,
+    val result: String,
+    val time: String
+)
+
+private class CalculatorStore(context: Context) {
+
+    private val prefs =
+        context.getSharedPreferences("blue_black_calculator", Context.MODE_PRIVATE)
+
+    fun saveHistory(items: List<HistoryItem>) {
+        val value = items.joinToString("|||") {
+            "${it.expression}@@@${it.result}@@@${it.time}"
+        }
+        prefs.edit().putString("history", value).apply()
+    }
+
+    fun loadHistory(): List<HistoryItem> {
+        val value = prefs.getString("history", "") ?: ""
+        if (value.isBlank()) return emptyList()
+
+        return value.split("|||").mapNotNull {
+            val p = it.split("@@@")
+            if (p.size == 3) {
+                HistoryItem(p[0], p[1], p[2])
+            } else null
+        }
+    }
+
+    fun clearHistory() {
+        prefs.edit().remove("history").apply()
+    }
+
+    fun saveDarkMode(value: Boolean) {
+        prefs.edit().putBoolean("dark", value).apply()
+    }
+
+    fun darkMode(): Boolean =
+        prefs.getBoolean("dark", true)
+
+    fun saveWallpaper(uri: String?) {
+        prefs.edit().putString("wallpaper", uri).apply()
+    }
+
+    fun wallpaper(): String? =
+        prefs.getString("wallpaper", null)
+}
+
+// ============================================================
+// EXPRESSION ENGINE
+// ============================================================
+
+private class ExpressionParser(
+    private val input: String
+) {
+
+    private var position = 0
+
+    fun parse(): Double {
+        position = 0
+        val result = expression()
+        skipSpaces()
+        if (position < input.length) {
+            throw IllegalArgumentException("Invalid expression")
+        }
+        return result
+    }
+
+    private fun expression(): Double {
+        var result = term()
+
+        while (true) {
+            skipSpaces()
+
+            if (match('+')) {
+                result += term()
+            } else if (match('-')) {
+                result -= term()
+            } else {
+                break
+            }
+        }
+
+        return result
+    }
+
+    private fun term(): Double {
+        var result = power()
+
+        while (true) {
+            skipSpaces()
+
+            if (match('*')) {
+                result *= power()
+            } else if (match('/')) {
+                val divisor = power()
+                if (divisor == 0.0) throw ArithmeticException("Cannot divide by zero")
+                result /= divisor
+            } else if (match('%')) {
+                result %= power()
+            } else {
+                break
+            }
+        }
+
+        return result
+    }
+
+    private fun power(): Double {
+        var result = unary()
+
+        skipSpaces()
+
+        if (match('^')) {
+            result = result.pow(power())
+        }
+
+        return result
+    }
+
+    private fun unary(): Double {
+        skipSpaces()
+
+        if (match('+')) return unary()
+        if (match('-')) return -unary()
+
+        return primary()
+    }
+
+    private fun primary(): Double {
+
+        skipSpaces()
+
+        if (match('(')) {
+            val result = expression()
+            if (!match(')')) {
+                throw IllegalArgumentException("Missing )")
+            }
+            return result
+        }
+
+        if (position >= input.length) {
+            throw IllegalArgumentException("Unexpected end")
+        }
+
+        if (input[position].isDigit() || input[position] == '.') {
+            return number()
+        }
+
+        if (input[position].isLetter()) {
+            val name = identifier()
+
+            return when (name.lowercase()) {
+
+                "pi" -> Math.PI
+
+                "e" -> Math.E
+
+                "sqrt" -> {
+                    requireOpen()
+                    sqrt(expression()).also {
+                        requireClose()
+                    }
+                }
+
+                "sin" -> {
+                    requireOpen()
+                    sin(Math.toRadians(expression())).also {
+                        requireClose()
+                    }
+                }
+
+                "cos" -> {
+                    requireOpen()
+                    cos(Math.toRadians(expression())).also {
+                        requireClose()
+                    }
+                }
+
+                "tan" -> {
+                    requireOpen()
+                    tan(Math.toRadians(expression())).also {
+                        requireClose()
+                    }
+                }
+
+                "ln" -> {
+                    requireOpen()
+                    kotlin.math.ln(expression()).also {
+                        requireClose()
+                    }
+                }
+
+                "log" -> {
+                    requireOpen()
+                    log10(expression()).also {
+                        requireClose()
+                    }
+                }
+
+                "abs" -> {
+                    requireOpen()
+                    abs(expression()).also {
+                        requireClose()
+                    }
+                }
+
+                else -> throw IllegalArgumentException("Unknown function: $name")
+            }
+        }
+
+        throw IllegalArgumentException("Invalid expression")
+    }
+
+    private fun number(): Double {
+
+        val start = position
+
+        while (
+            position < input.length &&
+            (
+                input[position].isDigit() ||
+                    input[position] == '.' ||
+                    input[position] == 'E' ||
+                    input[position] == 'e'
+                )
+        ) {
+            position++
+        }
+
+        return input.substring(start, position).toDouble()
+    }
+
+    private fun identifier(): String {
+
+        val start = position
+
+        while (
+            position < input.length &&
+            input[position].isLetter()
+        ) {
+            position++
+        }
+
+        return input.substring(start, position)
+    }
+
+    private fun requireOpen() {
+        skipSpaces()
+        if (!match('(')) {
+            throw IllegalArgumentException("Missing (")
+        }
+    }
+
+    private fun requireClose() {
+        skipSpaces()
+        if (!match(')')) {
+            throw IllegalArgumentException("Missing )")
+        }
+    }
+
+    private fun match(c: Char): Boolean {
+        if (position < input.length && input[position] == c) {
+            position++
+            return true
+        }
+        return false
+    }
+
+    private fun skipSpaces() {
+        while (position < input.length && input[position].isWhitespace()) {
+            position++
+        }
+    }
+}
+
+private fun calculateExpression(expression: String): String {
+
+    if (expression.isBlank()) return "0"
+
+    return try {
+        val result = ExpressionParser(expression).parse()
+
+        if (result.isNaN() || result.isInfinite()) {
+            "Error"
+        } else {
+            formatNumber(result)
+        }
+    } catch (_: Exception) {
+        "Error"
+    }
+}
+
+private fun formatNumber(value: Double): String {
+
+    if (abs(value) < 0.0000000001) return "0"
+
+    val rounded = if (abs(value - value.toLong()) < 0.0000000001) {
+        value.toLong().toDouble()
+    } else value
+
+    val formatter = DecimalFormat("#,##0.##########")
+
+    return formatter.format(rounded)
+}
+
+private fun cleanExpressionForParser(value: String): String {
+    return value
+        .replace("×", "*")
+        .replace("÷", "/")
+        .replace("−", "-")
+        .replace("π", "pi")
+        .replace("√", "sqrt")
+}
+
+// ============================================================
+// TAMIL DATE / TIME
+// ============================================================
+
+private fun tamilDay(day: Int): String =
+    listOf(
+        "ஞாயிறு",
+        "திங்கள்",
+        "செவ்வாய்",
+        "புதன்",
+        "வியாழன்",
+        "வெள்ளி",
+        "சனி"
+    )[day]
+
+private fun tamilMonth(month: Int): String =
+    listOf(
+        "ஜனவரி",
+        "பிப்ரவரி",
+        "மார்ச்",
+        "ஏப்ரல்",
+        "மே",
+        "ஜூன்",
+        "ஜூலை",
+        "ஆகஸ்ட்",
+        "செப்டம்பர்",
+        "அக்டோபர்",
+        "நவம்பர்",
+        "டிசம்பர்"
+    )[month - 1]
+
+private fun tamilDateTime(): String {
+
+    val now = LocalDateTime.now()
+
+    val day = tamilDay(now.dayOfWeek.value % 7)
+    val month = tamilMonth(now.monthValue)
+
+    val time =
+        String.format(
+            Locale.getDefault(),
+            "%02d:%02d:%02d",
+            now.hour,
+            now.minute,
+            now.second
+        )
+
+    return "$day, ${now.dayOfMonth} $month ${now.year} • $time"
+}
+
+// ============================================================
+// MAIN ACTIVITY
+// ============================================================
+
+class MainActivity : ComponentActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setContent {
+            BlueBlackCalculatorApp()
+        }
+    }
+}
+
+// ============================================================
+// ROOT APP
+// ============================================================
+
+@Composable
+private fun BlueBlackCalculatorApp() {
+
+    val context = LocalContext.current
+    val store = remember { CalculatorStore(context) }
+
+    var darkMode by remember {
+        mutableStateOf(store.darkMode())
+    }
+
+    val wallpaperUri by remember {
+        mutableStateOf(store.wallpaper())
+    }
+
+    val colors = if (darkMode) {
+
+        darkColorScheme(
+            primary = Blue,
+            secondary = DeepBlue,
+            background = Black,
+            surface = DarkCard,
+            onBackground = Color.White,
+            onSurface = Color.White
+        )
+
+    } else {
+
+        lightColorScheme(
+            primary = DeepBlue,
+            secondary = Blue,
+            background = LightBg,
+            surface = LightCard,
+            onBackground = Color.Black,
+            onSurface = Color.Black
+        )
+    }
+
+    MaterialTheme(
+        colorScheme = colors
+    ) {
+
+        CalculatorAppContent(
+            darkMode = darkMode,
+            wallpaperUri = wallpaperUri,
+            onDarkModeChanged = {
+                darkMode = it
+                store.saveDarkMode(it)
+            }
+        )
+    }
+}
+
+// ============================================================
+// APP CONTENT
+// ============================================================
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CalculatorAppContent(
+    darkMode: Boolean,
+    wallpaperUri: String?,
+    onDarkModeChanged: (Boolean) -> Unit
+) {
+
+    val context = LocalContext.current
+    val store = remember { CalculatorStore(context) }
+
+    var page by remember {
+        mutableStateOf(Page.CALCULATOR)
+    }
+
+    var expression by remember {
+        mutableStateOf("")
+    }
+
+    var result by remember {
+        mutableStateOf("0")
+    }
+
+    var scientific by remember {
+        mutableStateOf(false)
+    }
+
+    var memory by remember {
+        mutableFloatStateOf(0f)
+    }
+
+    val history = remember {
+        mutableStateListOf<HistoryItem>().apply {
+            addAll(store.loadHistory())
+        }
+    }
+
+    var converterType by remember {
+        mutableStateOf(ConverterType.CURRENCY)
+    }
+
+    var showMenu by remember {
+        mutableStateOf(false)
+    }
+
+    var wallpaper by remember {
+        mutableStateOf(wallpaperUri)
+    }
+
+    val wallpaperPicker =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.GetContent()
+        ) { uri: Uri? ->
+
+            if (uri != null) {
+                wallpaper = uri.toString()
+                store.saveWallpaper(uri.toString())
+            }
+        }
+
+    val doVibrate = {
+        try {
+            val vibrator =
+                if (android.os.Build.VERSION.SDK_INT >= 31) {
+                    val manager =
+                        context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE)
+                            as VibratorManager
+                    manager.defaultVibrator
+                } else {
+                    @Suppress("DEPRECATION")
+                    context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                }
+
+            if (android.os.Build.VERSION.SDK_INT >= 26) {
+                vibrator.vibrate(
+                    VibrationEffect.createOneShot(
+                        20,
+                        VibrationEffect.DEFAULT_AMPLITUDE
+                    )
+                )
+            }
+        } catch (_: Exception) {
+        }
+    }
+
+    fun addHistory(exp: String, res: String) {
+
+        if (exp.isBlank() || res == "Error") return
+
+        history.add(
+            0,
+            HistoryItem(
+                exp,
+                res,
+                SimpleDateFormat(
+                    "dd/MM/yyyy HH:mm",
+                    Locale.getDefault()
+                ).format(Date())
+            )
+        )
+
+        while (history.size > 100) {
+            history.removeAt(history.lastIndex)
+        }
+
+        store.saveHistory(history)
+    }
+
+    fun shareText(text: String) {
+
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, text)
+        }
+
+        context.startActivity(
+            Intent.createChooser(intent, "Share calculation")
+        )
+    }
+
+    fun makeScreenshot(exp: String, res: String) {
+
+        val width = 1080
+        val height = 620
+
+        val bitmap =
+            Bitmap.createBitmap(
+                width,
+                height,
+                Bitmap.Config.ARGB_8888
+            )
+
+        val canvas = Canvas(bitmap)
+
+        canvas.drawColor(
+            if (darkMode) Black.toArgb()
+            else LightBg.toArgb()
+        )
+
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+        paint.color = Blue.toArgb()
+        paint.typeface = Typeface.DEFAULT_BOLD
+        paint.textSize = 58f
+
+        canvas.drawText(
+            "BLUE BLACK CALCULATOR",
+            60f,
+            100f,
+            paint
+        )
+
+        paint.color =
+            if (darkMode) Color.WHITE.toArgb()
+            else Color.BLACK.toArgb()
+
+        paint.typeface = Typeface.DEFAULT
+        paint.textSize = 44f
+
+        canvas.drawText(
+            exp,
+            60f,
+            210f,
+            paint
+        )
+
+        paint.color = Blue.toArgb()
+        paint.textSize = 72f
+        paint.typeface = Typeface.DEFAULT_BOLD
+
+        canvas.drawText(
+            "= $res",
+            60f,
+            330f,
+            paint
+        )
+
+        paint.color =
+            if (darkMode) Color.LTGRAY.toArgb()
+            else Color.DKGRAY.toArgb()
+
+        paint.textSize = 32f
+        paint.typeface = Typeface.DEFAULT
+
+        canvas.drawText(
+            tamilDateTime(),
+            60f,
+            450f,
+            paint
+        )
+
+        canvas.drawText(
+            "Created with Blue Black Calculator",
+            60f,
+            520f,
+            paint
+        )
+
+        try {
+
+            val file =
+                File(
+                    context.cacheDir,
+                    "calculator_${System.currentTimeMillis()}.png"
+                )
+
+            FileOutputStream(file).use {
+                bitmap.compress(
+                    Bitmap.CompressFormat.PNG,
+                    100,
+                    it
+                )
+            }
+
+            val uri =
+                androidx.core.content.FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.fileprovider",
+                    file
+                )
+
+            val shareIntent =
+                Intent(Intent.ACTION_SEND).apply {
+                    type = "image/png"
+                    putExtra(Intent.EXTRA_STREAM, uri)
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+
+            context.startActivity(
+                Intent.createChooser(
+                    shareIntent,
+                    "Share screenshot"
+                )
+            )
+
+        } catch (_: Exception) {
+
+            shareText("$exp = $res")
+        }
+    }
+
+    Scaffold(
+
+        topBar = {
+
+            TopAppBar(
+
+                title = {
+                    Column {
+
+                        Text(
+                            "Blue Black",
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Text(
+                            tamilDateTime(),
+                            fontSize = 10.sp
+                        )
+                    }
+                },
+
+                navigationIcon = {
+
+                    IconButton(
+                        onClick = {
+                            page = Page.CALCULATOR
+                        }
+                    ) {
+
+                        Icon(
+                            Icons.Default.Calculate,
+                            contentDescription = null
+                        )
+                    }
+                },
+
+                actions = {
+
+                    IconButton(
+                        onClick = {
+                            shareText(
+                                if (expression.isNotBlank())
+                                    "$expression = $result"
+                                else
+                                    "Blue Black Calculator"
+                            )
+                        }
+                    ) {
+
+                        Icon(
+                            Icons.Default.Share,
+                            contentDescription = "Share"
+                        )
+                    }
+
+                    IconButton(
+                        onClick = {
+                            showMenu = true
+                        }
+                    ) {
+
+                        Icon(
+                            Icons.Default.MoreVert,
+                            contentDescription = null
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = {
+                            showMenu = false
+                        }
+                    ) {
+
+                        DropdownMenuItem(
+                            text = {
+                                Text("Scientific calculator")
+                            },
+                            onClick = {
+                                scientific = !scientific
+                                showMenu = false
+                            }
+                        )
+
+                        DropdownMenuItem(
+                            text = {
+                                Text("Clear history")
+                            },
+                            onClick = {
+                                history.clear()
+                                store.clearHistory()
+                                showMenu = false
+                            }
+                        )
+                    }
+                }
+            )
+        },
+
+        bottomBar = {
+
+            NavigationBar(
+                modifier = Modifier.navigationBarsPadding()
+            ) {
+
+                NavigationBarItem(
+                    selected = page == Page.CALCULATOR,
+                    onClick = {
+                        page = Page.CALCULATOR
+                    },
+                    icon = {
+                        Icon(
+                            Icons.Default.Calculate,
+                            contentDescription = null
+                        )
+                    },
+                    label = {
+                        Text("Calculator")
+                    }
+                )
+
+                NavigationBarItem(
+                    selected = page == Page.HISTORY,
+                    onClick = {
+                        page = Page.HISTORY
+                    },
+                    icon = {
+                        Icon(
+                            Icons.Default.History,
+                            contentDescription = null
+                        )
+                    },
+                    label = {
+                        Text("History")
+                    }
+                )
+
+                NavigationBarItem(
+                    selected = page == Page.CONVERTER,
+                    onClick = {
+                        page = Page.CONVERTER
+                    },
+                    icon = {
+                        Icon(
+                            Icons.Default.SwapHoriz,
+                            contentDescription = null
+                        )
+                    },
+                    label = {
+                        Text("Convert")
+                    }
+                )
+
+                NavigationBarItem(
+                    selected = page == Page.SETTINGS,
+                    onClick = {
+                        page = Page.SETTINGS
+                    },
+                    icon = {
+                        Icon(
+                            Icons.Default.Settings,
+                            contentDescription = null
+                        )
+                    },
+                    label = {
+                        Text("Settings")
+                    }
+                )
+            }
+        }
+
+    ) { padding ->
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    if (darkMode) Black else LightBg
+                )
+        ) {
+
+            if (wallpaper != null) {
+
+                // Wallpaper URI is intentionally stored.
+                // App remains usable if provider temporarily cannot load it.
+                Text(
+                    "",
+                    modifier = Modifier.size(0.dp)
+                )
+            }
+
+            when (page) {
+
+                Page.CALCULATOR -> {
+
+                    CalculatorScreen(
+                        padding = padding,
+                        expression = expression,
+                        result = result,
+                        scientific = scientific,
+                        memory = memory,
+                        darkMode = darkMode,
+                        onExpressionChange = {
+                            expression = it
+                        },
+                        onResultChange = {
+                            result = it
+                        },
+                        onScientificChange = {
+                            scientific = it
+                        },
+                        onMemoryChange = {
+                            memory = it
+                        },
+                        onAddHistory = {
+                            addHistory(
+                                expression,
+                                result
+                            )
+                        },
+                        onVibrate = doVibrate,
+                        onShare = {
+                            shareText(
+                                "$expression = $result"
+                            )
+                        },
+                        onScreenshot = {
+                            makeScreenshot(
+                                expression,
+                                result
+                            )
+                        }
+                    )
+                }
+
+                Page.HISTORY -> {
+
+                    HistoryScreen(
+                        padding = padding,
+                        history = history,
+                        onItemClick = { item ->
+                            expression = item.expression
+                            result = item.result
+                            page = Page.CALCULATOR
+                        },
+                        onClear = {
+                            history.clear()
+                            store.clearHistory()
+                        },
+                        onShare = {
+                            shareText(
+                                "${it.expression} = ${it.result}"
+                            )
+                        }
+                    )
+                }
+
+                Page.CONVERTER -> {
+
+                    ConverterScreen(
+                        padding = padding,
+                        type = converterType,
+                        onTypeChange = {
+                            converterType = it
+                        },
+                        darkMode = darkMode
+                    )
+                }
+
+                Page.SETTINGS -> {
+
+                    SettingsScreen(
+                        padding = padding,
+                        darkMode = darkMode,
+                        wallpaper = wallpaper,
+                        onDarkModeChange = onDarkModeChanged,
+                        onPickWallpaper = {
+                            wallpaperPicker.launch("image/*")
+                        },
+                        onRemoveWallpaper = {
+                            wallpaper = null
+                            store.saveWallpaper(null)
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+// ============================================================
+// CALCULATOR SCREEN
+// ============================================================
+
+@Composable
+private fun CalculatorScreen(
+    padding: PaddingValues,
+    expression: String,
+    result: String,
+    scientific: Boolean,
+    memory: Float,
+    darkMode: Boolean,
+    onExpressionChange: (String) -> Unit,
+    onResultChange: (String) -> Unit,
+    onScientificChange: (Boolean) -> Unit,
+    onMemoryChange: (Float) -> Unit,
+    onAddHistory: () -> Unit,
+    onVibrate: () -> Unit,
+    onShare: () -> Unit,
+    onScreenshot: () -> Unit
+) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)
+            .padding(horizontal = 12.dp)
+    ) {
+
+        // DISPLAY
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(
+                containerColor =
+                    if (darkMode) DarkCard
+                    else LightCard
+            )
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.End
+            ) {
+
+                Text(
+                    text =
+                        if (expression.isBlank())
+                            "Ready"
+                        else expression,
+                    fontSize = 22.sp,
+                    color = Color.Gray,
+                    maxLines = 2
+                )
+
+                Spacer(
+                    Modifier.height(8.dp)
+                )
+
+                Text(
+                    text = result,
+                    fontSize = 46.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Blue,
+                    maxLines = 2
+                )
+
+                Spacer(
+                    Modifier.height(8.dp)
+                )
+
+                Row {
+
+                    Text(
+                        "M: ${formatNumber(memory.toDouble())}",
+                        fontSize = 12.sp,
+                        color = Color.Gray
+                    )
+
+                    Spacer(
+                        Modifier.width(14.dp)
+                    )
+
+                    Text(
+                        tamilDateTime(),
+                        fontSize = 11.sp,
+                        color = Color.Gray
+                    )
+                }
+            }
+        }
+
+        Spacer(
+            Modifier.height(8.dp)
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(
+                    rememberScrollState()
+                ),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+
+            SmallButton(
+                "MC",
+                onClick = {
+                    onMemoryChange(0f)
+                    onVibrate()
+                }
+            )
+
+            SmallButton(
+                "MR",
+                onClick = {
+                    val m =
+                        formatNumber(memory.toDouble())
+                    onExpressionChange(
+                        if (expression.isBlank())
+                            m
+                        else expression + m
+                    )
+                    onVibrate()
+                }
+            )
+
+            SmallButton(
+                "M+",
+                onClick = {
+                    val v =
+                        result.replace(",", "").toFloatOrNull()
+                            ?: 0f
+                    onMemoryChange(
+                        memory + v
+                    )
+                    onVibrate()
+                }
+            )
+
+            SmallButton(
+                "M−",
+                onClick = {
+                    val v =
+                        result.replace(",", "").toFloatOrNull()
+                            ?: 0f
+                    onMemoryChange(
+                        memory - v
+                    )
+                    onVibrate()
+                }
+            )
+
+            SmallButton(
+                "SCI",
+                onClick = {
+                    onScientificChange(!scientific)
+                }
+            )
+
+            SmallButton(
+                "📤",
+                onClick = onShare
+            )
+
+            SmallButton(
+                "📸",
+                onClick = onScreenshot
+            )
+        }
+
+        Spacer(
+            Modifier.height(6.dp)
+        )
+
+        if (scientific) {
+
+            ScientificRow(
+                onClick = { key ->
+
+                    onVibrate()
+
+                    when (key) {
+
+                        "sin" -> appendFunction(
+                            expression,
+                            "sin(",
+                            onExpressionChange
+                        )
+
+                        "cos" -> appendFunction(
+                            expression,
+                            "cos(",
+                            onExpressionChange
+                        )
+
+                        "tan" -> appendFunction(
+                            expression,
+                            "tan(",
+                            onExpressionChange
+                        )
+
+                        "ln" -> appendFunction(
+                            expression,
+                            "ln(",
+                            onExpressionChange
+                        )
+
+                        "log" -> appendFunction(
+                            expression,
+                            "log(",
+                            onExpressionChange
+                        )
+
+                        "√" -> appendFunction(
+                            expression,
+                            "sqrt(",
+                            onExpressionChange
+                        )
+
+                        "π" -> appendFunction(
+                            expression,
+                            "pi",
+                            onExpressionChange
+                        )
+
+                        "e" -> appendFunction(
+                            expression,
+                            "e",
+                            onExpressionChange
+                        )
+
+                        "^" -> appendFunction(
+                            expression,
+                            "^",
+                            onExpressionChange
+                        )
+
+                        "(" -> appendFunction(
+                            expression,
+                            "(",
+                            onExpressionChange
+                        )
+
+                        ")" -> appendFunction(
+                            expression,
+                            ")",
+                            onExpressionChange
+                        )
+                    }
+                }
+            )
+
+            Spacer(
+                Modifier.height(6.dp)
+            )
+        }
+
+        // BUTTONS
+
+        val rows = listOf(
+
+            listOf(
+                "C",
+                "⌫",
+                "%",
+                "÷"
+            ),
+
+            listOf(
+                "7",
+                "8",
+                "9",
+                "×"
+            ),
+
+            listOf(
+                "4",
+                "5",
+                "6",
+                "−"
+            ),
+
+            listOf(
+                "1",
+                "2",
+                "3",
+                "+"
+            ),
+
+            listOf(
+                "00",
+                "0",
+                ".",
+                "="
+            )
+        )
+
+        rows.forEach { row ->
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                horizontalArrangement =
+                    Arrangement.spacedBy(7.dp)
+            ) {
+
+                row.forEach { key ->
+
+                    CalculatorButton(
+                        key = key,
+                        modifier = Modifier.weight(1f),
+                        isOperator =
+                            key in listOf(
+                                "÷",
+                                "×",
+                                "−",
+                                "+",
+                                "="
+                            ),
+                        isClear = key == "C",
+                        onClick = {
+
+                            onVibrate()
+
+                            when (key) {
+
+                                "C" -> {
+                                    onExpressionChange("")
+                                    onResultChange("0")
+                                }
+
+                                "⌫" -> {
+
+                                    if (expression.isNotEmpty()) {
+
+                                        onExpressionChange(
+                                            expression.dropLast(1)
+                                        )
+
+                                        val newExp =
+                                            expression.dropLast(1)
+
+                                        if (newExp.isNotBlank()) {
+                                            onResultChange(
+                                                calculateExpression(
+                                                    cleanExpressionForParser(
+                                                        newExp
+                                                    )
+                                                )
+                                            )
+                                        } else {
+                                            onResultChange("0")
+                                        }
+                                    }
+                                }
+
+                                "=" -> {
+
+                                    val answer =
+                                        calculateExpression(
+                                            cleanExpressionForParser(
+                                                expression
+                                            )
+                                        )
+
+                                    onResultChange(answer)
+                                    onAddHistory()
+                                }
+
+                                else -> {
+
+                                    val newExpression =
+                                        expression + key
+
+                                    onExpressionChange(
+                                        newExpression
+                                    )
+
+                                    val preview =
+                                        calculateExpression(
+                                            cleanExpressionForParser(
+                                                newExpression
+                                            )
+                                        )
+
+                                    if (preview != "Error") {
+                                        onResultChange(preview)
+                                    }
+                                }
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun appendFunction(
+    expression: String,
+    value: String,
+    onChange: (String) -> Unit
+) {
+    onChange(
+        if (expression.isBlank())
+            value
+        else expression + value
+    )
+}
+
+// ============================================================
+// BUTTONS
+// ============================================================
+
+@Composable
+private fun CalculatorButton(
+    key: String,
+    modifier: Modifier,
+    isOperator: Boolean,
+    isClear: Boolean,
+    onClick: () -> Unit
+) {
+
+    val background = when {
+
+        isClear ->
+            Red
+
+        isOperator ->
+            Blue
+
+        else ->
+            DarkButton
+    }
+
+    Box(
+        modifier = modifier
+            .fillMaxHeight()
+            .clip(
+                RoundedCornerShape(20.dp)
+            )
+            .background(background)
+            .clickable {
+                onClick()
+            }
+            .border(
+                1.dp,
+                Color.White.copy(alpha = 0.05f),
+                RoundedCornerShape(20.dp)
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+
+        Text(
+            key,
+            fontSize =
+                if (key.length > 1)
+                    20.sp
+                else
+                    28.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White
+        )
+    }
+}
+
+@Composable
+private fun SmallButton(
+    text: String,
+    onClick: () -> Unit
+) {
+
+    Box(
+        modifier = Modifier
+            .height(38.dp)
+            .clip(
+                RoundedCornerShape(12.dp)
+            )
+            .background(
+                DarkButton
+            )
+            .clickable {
+                onClick()
+            }
+            .padding(
+                horizontal = 13.dp
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+
+        Text(
+            text,
+            color = Color.White,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
+private fun ScientificRow(
+    onClick: (String) -> Unit
+) {
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(
+                rememberScrollState()
+            ),
+        horizontalArrangement =
+            Arrangement.spacedBy(6.dp)
+    ) {
+
+        listOf(
+            "sin",
+            "cos",
+            "tan",
+            "ln",
+            "log",
+            "√",
+            "π",
+            "e",
+            "^",
+            "(",
+            ")"
+        ).forEach {
+
+            SmallButton(
+                text = it,
+                onClick = {
+                    onClick(it)
+                }
+            )
+        }
+    }
+}
+
+// ============================================================
+// HISTORY
+// ============================================================
+
+@Composable
+private fun HistoryScreen(
+    padding: PaddingValues,
+    history: List<HistoryItem>,
+    onItemClick: (HistoryItem) -> Unit,
+    onClear: () -> Unit,
+    onShare: (HistoryItem) -> Unit
+) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)
+    ) {
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Text(
+                "Calculation History",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.weight(1f)
+            )
+
+            IconButton(
+                onClick = onClear
+            ) {
+
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = "Clear"
+                )
+            }
+        }
+
+        if (history.isEmpty()) {
+
+            Box(
+                Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+
+                Column(
+                    horizontalAlignment =
+                        Alignment.CenterHorizontally
+                ) {
+
+                    Icon(
+                        Icons.Default.History,
+                        contentDescription = null,
+                        modifier = Modifier.size(64.dp),
+                        tint = Blue
+                    )
+
+                    Spacer(
+                        Modifier.height(12.dp)
+                    )
+
+                    Text(
+                        "No calculations yet",
+                        fontSize = 18.sp
+                    )
+                }
+            }
+
+        } else {
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding =
+                    PaddingValues(
+                        horizontal = 12.dp,
+                        vertical = 8.dp
+                    ),
+                verticalArrangement =
+                    Arrangement.spacedBy(8.dp)
+            ) {
+
+                items(
+                    history,
+                    key = {
+                        it.time + it.expression
+                    }
+                ) { item ->
+
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                onItemClick(item)
+                            },
+                        colors = CardDefaults.cardColors(
+                            containerColor = DarkCard
+                        )
+                    ) {
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalAlignment =
+                                Alignment.CenterVertically
+                        ) {
+
+                            Column(
+                                Modifier.weight(1f)
+                            ) {
+
+                                Text(
+                                    item.expression,
+                                    color = Color.LightGray,
+                                    fontSize = 15.sp
+                                )
+
+                                Text(
+                                    "= ${item.result}",
+                                    color = Blue,
+                                    fontSize = 24.sp,
+                                    fontWeight =
+                                        FontWeight.Bold
+                                )
+
+                                Text(
+                                    item.time,
+                                    color = Color.Gray,
+                                    fontSize = 11.sp
+                                )
+                            }
+
+                            IconButton(
+                                onClick = {
+                                    onShare(item)
+                                }
+                            ) {
+
+                                Icon(
+                                    Icons.Default.Share,
+                                    contentDescription =
+                                        "Share",
+                                    tint = Blue
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ============================================================
+// CONVERTER SCREEN
+// ============================================================
+
+@Composable
+private fun ConverterScreen(
+    padding: PaddingValues,
+    type: ConverterType,
+    onTypeChange: (ConverterType) -> Unit,
+    darkMode: Boolean
+) {
+
+    var selected by remember {
+        mutableStateOf(type)
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)
+    ) {
+
+        Text(
+            "Converters",
+            fontSize = 26.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(
+                start = 16.dp,
+                top = 14.dp,
+                bottom = 8.dp
+            )
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(
+                    rememberScrollState()
+                )
+                .padding(horizontal = 10.dp),
+            horizontalArrangement =
+                Arrangement.spacedBy(8.dp)
+        ) {
+
+            ConverterType.entries.forEach {
+
+                Box(
+                    modifier = Modifier
+                        .clip(
+                            RoundedCornerShape(16.dp)
+                        )
+                        .background(
+                            if (selected == it)
+                                Blue
+                            else
+                                DarkButton
+                        )
+                        .clickable {
+                            selected = it
+                            onTypeChange(it)
+                        }
+                        .padding(
+                            horizontal = 14.dp,
+                            vertical = 10.dp
+                        )
+                ) {
+
+                    Text(
+                        "${it.icon} ${it.title}",
+                        color = Color.White,
+                        fontSize = 13.sp
+                    )
+                }
+            }
+        }
+
+        Spacer(
+            Modifier.height(8.dp)
+        )
+
+        when (selected) {
+
+            ConverterType.CURRENCY ->
+                CurrencyConverter()
+
+            ConverterType.LENGTH ->
+                LengthConverter()
+
+            ConverterType.MASS ->
+                MassConverter()
+
+            ConverterType.AREA ->
+                AreaConverter()
+
+            ConverterType.TIME ->
+                TimeConverter()
+
+            ConverterType.FINANCE ->
+                FinanceConverter()
+
+            ConverterType.DATA ->
+                DataConverter()
+
+            ConverterType.DATE ->
+                DateConverter()
+
+            ConverterType.DISCOUNT ->
+                DiscountConverter()
+
+            ConverterType.VOLUME ->
+                VolumeConverter()
+
+            ConverterType.NUMERAL ->
+                NumeralConverter()
+
+            ConverterType.SPEED ->
+                SpeedConverter()
+
+            ConverterType.TEMPERATURE ->
+                TemperatureConverter()
+
+            ConverterType.GST ->
+                GstConverter()
+
+            ConverterType.BMI ->
+                BmiConverter()
+        }
+    }
+}
+
+// ============================================================
+// GENERIC CONVERTER UI
+// ============================================================
+
+@Composable
+private fun ConverterCard(
+    title: String,
+    content: @Composable () -> Unit
+) {
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(12.dp),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = DarkCard
+        )
+    ) {
+
+        Column(
+            modifier = Modifier.padding(18.dp)
+        ) {
+
+            Text(
+                title,
+                color = Blue,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(
+                Modifier.height(14.dp)
+            )
+
+            content()
+        }
+    }
+}
+
+@Composable
+private fun NumberField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String
+) {
+
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = {
+            Text(label)
+        },
+        modifier = Modifier.fillMaxWidth(),
+        singleLine = true,
+        keyboardOptions =
+            KeyboardOptions(
+                keyboardType = KeyboardType.Decimal
+            )
+    )
+}
+
+@Composable
+private fun ResultText(
+    value: String
+) {
+
+    Spacer(
+        Modifier.height(14.dp)
+    )
+
+    Text(
+        "Result",
+        color = Color.Gray
+    )
+
+    Text(
+        value,
+        color = Blue,
+        fontSize = 28.sp,
+        fontWeight = FontWeight.Bold
+    )
+}
+
+// ============================================================
+// CURRENCY
+// ============================================================
+
+@Composable
+private fun CurrencyConverter() {
+
+    var amount by remember {
+        mutableStateOf("1")
+    }
+
+    var from by remember {
+        mutableStateOf("INR")
+    }
+
+    var to by remember {
+        mutableStateOf("USD")
+    }
+
+    val rates = mapOf(
+        "INR" to 1.0,
+        "USD" to 0.0119,
+        "EUR" to 0.0109,
+        "GBP" to 0.0094,
+        "AED" to 0.0437,
+        "SGD" to 0.0156,
+        "JPY" to 1.77,
+        "AUD" to 0.0180,
+        "CAD" to 0.0164
+    )
+
+    val result = convertCurrency(
+        amount.toDoubleOrNull() ?: 0.0,
+        from,
+        to,
+        rates
+    )
+
+    ConverterCard("Currency Converter") {
+
+        NumberField(
+            amount,
+            {
+                amount = it
+            },
+            "Amount"
+        )
+
+        Spacer(
+            Modifier.height(10.dp)
+        )
+
+        UnitRow(
+            from,
+            rates.keys.toList()
+        ) {
+            from = it
+        }
+
+        Text(
+            "⇅",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            color = Blue,
+            fontSize = 28.sp,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+        )
+
+        UnitRow(
+            to,
+            rates.keys.toList()
+        ) {
+            to = it
+        }
+
+        ResultText(
+            "${formatNumber(result)} $to"
+        )
+
+        Text(
+            "Demo rates. Update rates when required.",
+            color = Color.Gray,
+            fontSize = 11.sp
+        )
+    }
+}
+
+private fun convertCurrency(
+    value: Double,
+    from: String,
+    to: String,
+    rates: Map<String, Double>
+): Double {
+
+    val inr = value / (rates[from] ?: 1.0)
+    return inr * (rates[to] ?: 1.0)
+}
+
+// ============================================================
+// UNIT ROW
+// ============================================================
+
+@Composable
+private fun UnitRow(
+    selected: String,
+    units: List<String>,
+    onChange: (String) -> Unit
+) {
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(
+                rememberScrollState()
+            ),
+        horizontalArrangement =
+            Arrangement.spacedBy(6.dp)
+    ) {
+
+        units.forEach {
+
+            Box(
+                modifier = Modifier
+                    .clip(
+                        RoundedCornerShape(12.dp)
+                    )
+                    .background(
+                        if (selected == it)
+                            Blue
+                        else
+                            DarkButton
+                    )
+                    .clickable {
+                        onChange(it)
+                    }
+                    .padding(
+                        horizontal = 12.dp,
+                        vertical = 8.dp
+                    )
+            ) {
+
+                Text(
+                    it,
+                    color = Color.White
+                )
+            }
+        }
+    }
+}
+
+// ============================================================
+// LENGTH
+// ============================================================
+
+@Composable
+private fun LengthConverter() {
+
+    var value by remember {
+        mutableStateOf("1")
+    }
+
+    var from by remember {
+        mutableStateOf("Meter")
+    }
+
+    var to by remember {
+        mutableStateOf("Kilometer")
+    }
+
+    val factors = mapOf(
+        "Meter" to 1.0,
+        "Kilometer" to 1000.0,
+        "Centimeter" to 0.01,
+        "Millimeter" to 0.001,
+        "Mile" to 1609.344,
+        "Yard" to 0.9144,
+        "Foot" to 0.3048,
+        "Inch" to 0.0254
+    )
+
+    val result =
+        (value.toDoubleOrNull() ?: 0.0) *
+            (factors[from] ?: 1.0) /
+            (factors[to] ?: 1.0)
+
+    ConverterCard("Length Converter") {
+
+        NumberField(
+            value,
+            { value = it },
+            "Value"
+        )
+
+        Spacer(Modifier.height(10.dp))
+
+        UnitRow(
+            from,
+            factors.keys.toList()
+        ) {
+            from = it
+        }
+
+        Spacer(Modifier.height(10.dp))
+
+        UnitRow(
+            to,
+            factors.keys.toList()
+        ) {
+            to = it
+        }
+
+        ResultText(
+            formatNumber(result)
+        )
+    }
+}
+
+// ============================================================
+// MASS
+// ============================================================
+
+@Composable
+private fun MassConverter() {
+
+    var value by remember {
+        mutableStateOf("1")
+    }
+
+    var from by remember {
+        mutableStateOf("Kilogram")
+    }
+
+    var to by remember {
+        mutableStateOf("Gram")
+    }
+
+    val factors = mapOf(
+        "Kilogram" to 1.0,
+        "Gram" to 0.001,
+        "Milligram" to 0.000001,
+        "Pound" to 0.45359237,
+        "Ounce" to 0.0283495231,
+        "Ton" to 1000.0
+    )
+
+    val result =
+        (value.toDoubleOrNull() ?: 0.0) *
+            factors.getValue(from) /
+            factors.getValue(to)
+
+    ConverterCard("Mass Converter") {
+
+        NumberField(
+            value,
+            { value = it },
+            "Value"
+        )
+
+        Spacer(Modifier.height(10.dp))
+
+        UnitRow(
+            from,
+            factors.keys.toList()
+        ) {
+            from = it
+        }
+
+        Spacer(Modifier.height(10.dp))
+
+        UnitRow(
+            to,
+            factors.keys.toList()
+        ) {
+            to = it
+        }
+
+        ResultText(
+            formatNumber(result)
+        )
+    }
+}
+
+// ============================================================
+// AREA
+// ============================================================
+
+@Composable
+private fun AreaConverter() {
+
+    var value by remember {
+        mutableStateOf("1")
+    }
+
+    var from by remember {
+        mutableStateOf("Square Meter")
+    }
+
+    var to by remember {
+        mutableStateOf("Square Feet")
+    }
+
+    val factors = mapOf(
+        "Square Meter" to 1.0,
+        "Square Kilometer" to 1_000_000.0,
+        "Square Centimeter" to 0.0001,
+        "Square Feet" to 0.09290304,
+        "Square Inch" to 0.00064516,
+        "Acre" to 4046.8564224,
+        "Hectare" to 10000.0
+    )
+
+    val result =
+        (value.toDoubleOrNull() ?: 0.0) *
+            factors.getValue(from) /
+            factors.getValue(to)
+
+    ConverterCard("Area Converter") {
+
+        NumberField(
+            value,
+            { value = it },
+            "Area"
+        )
+
+        Spacer(Modifier.height(10.dp))
+
+        UnitRow(
+            from,
+            factors.keys.toList()
+        ) {
+            from = it
+        }
+
+        Spacer(Modifier.height(10.dp))
+
+        UnitRow(
+            to,
+            factors.keys.toList()
+        ) {
+            to = it
+        }
+
+        ResultText(
+            formatNumber(result)
+        )
+    }
+}
+
+// ============================================================
+// TIME
+// ============================================================
+
+@Composable
+private fun TimeConverter() {
+
+    var value by remember {
+        mutableStateOf("1")
+    }
+
+    var from by remember {
+        mutableStateOf("Hour")
+    }
+
+    var to by remember {
+        mutableStateOf("Minute")
+    }
+
+    val factors = mapOf(
+        "Second" to 1.0,
+        "Minute" to 60.0,
+        "Hour" to 3600.0,
+        "Day" to 86400.0,
+        "Week" to 604800.0,
+        "Year" to 31536000.0
+    )
+
+    val result =
+        (value.toDoubleOrNull() ?: 0.0) *
+            factors.getValue(from) /
+            factors.getValue(to)
+
+    ConverterCard("Time Converter") {
+
+        NumberField(
+            value,
+            { value = it },
+            "Time"
+        )
+
+        Spacer(Modifier.height(10.dp))
+
+        UnitRow(
+            from,
+            factors.keys.toList()
+        ) {
+            from = it
+        }
+
+        Spacer(Modifier.height(10.dp))
+
+        UnitRow(
+            to,
+            factors.keys.toList()
+        ) {
+            to = it
+        }
+
+        ResultText(
+            formatNumber(result)
+        )
+    }
+}
+
+// ============================================================
+// FINANCE
+// ============================================================
+
+@Composable
+private fun FinanceConverter() {
+
+    var principal by remember {
+        mutableStateOf("100000")
+    }
+
+    var rate by remember {
+        mutableStateOf("8")
+    }
+
+    var years by remember {
+        mutableStateOf("5")
+    }
+
+    val p = principal.toDoubleOrNull() ?: 0.0
+    val r = rate.toDoubleOrNull() ?: 0.0
+    val t = years.toDoubleOrNull() ?: 0.0
+
+    val simpleInterest =
+        p * r * t / 100.0
+
+    val compound =
+        p * (1 + r / 100).pow(t) - p
+
+    ConverterCard("Finance Calculator") {
+
+        NumberField(
+            principal,
+            { principal = it },
+            "Principal"
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        NumberField(
+            rate,
+            { rate = it },
+            "Annual Interest %"
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        NumberField(
+            years,
+            { years = it },
+            "Years"
+        )
+
+        ResultText(
+            "Simple Interest: ₹${formatNumber(simpleInterest)}"
+        )
+
+        Text(
+            "Compound Interest: ₹${formatNumber(compound)}",
+            color = Green,
+            fontSize = 18.sp
+        )
+
+        Text(
+            "Simple Amount: ₹${formatNumber(p + simpleInterest)}",
+            color = Color.White
+        )
+
+        Text(
+            "Compound Amount: ₹${formatNumber(p + compound)}",
+            color = Color.White
+        )
+    }
+}
+
+// ============================================================
+// DATA
+// ============================================================
+
+@Composable
+private fun DataConverter() {
+
+    var value by remember {
+        mutableStateOf("1")
+    }
+
+    var from by remember {
+        mutableStateOf("MB")
+    }
+
+    var to by remember {
+        mutableStateOf("GB")
+    }
+
+    val factors = mapOf(
+        "Bit" to 0.125,
+        "Byte" to 1.0,
+        "KB" to 1024.0,
+        "MB" to 1024.0 * 1024,
+        "GB" to 1024.0 * 1024 * 1024,
+        "TB" to 1024.0 * 1024 * 1024 * 1024
+    )
+
+    val result =
+        (value.toDoubleOrNull() ?: 0.0) *
+            factors.getValue(from) /
+            factors.getValue(to)
+
+    ConverterCard("Data Converter") {
+
+        NumberField(
+            value,
+            { value = it },
+            "Data"
+        )
+
+        Spacer(Modifier.height(10.dp))
+
+        UnitRow(
+            from,
+            factors.keys.toList()
+        ) {
+            from = it
+        }
+
+        Spacer(Modifier.height(10.dp))
+
+        UnitRow(
+            to,
+            factors.keys.toList()
+        ) {
+            to = it
+        }
+
+        ResultText(
+            formatNumber(result)
+        )
+    }
+}
+
+// ============================================================
+// DATE CALCULATOR
+// ============================================================
+
+@Composable
+private fun DateConverter() {
+
+    var days by remember {
+        mutableStateOf("30")
+    }
+
+    val now = LocalDate.now()
+
+    val future =
+        now.plusDays(
+            days.toLongOrNull() ?: 0
+        )
+
+    val past =
+        now.minusDays(
+            days.toLongOrNull() ?: 0
+        )
+
+    ConverterCard("Date Calculator") {
+
+        NumberField(
+            days,
+            { days = it },
+            "Number of Days"
+        )
+
+        ResultText(
+            "Today: $now"
+        )
+
+        Text(
+            "After $days days: $future",
+            color = Green,
+            fontSize = 18.sp
+        )
+
+        Text(
+            "$days days ago: $past",
+            color = Orange,
+            fontSize = 18.sp
+        )
+    }
+}
+
+// ============================================================
+// DISCOUNT
+// ============================================================
+
+@Composable
+private fun DiscountConverter() {
+
+    var price by remember {
+        mutableStateOf("1000")
+    }
+
+    var discount by remember {
+        mutableStateOf("20")
+    }
+
+    val p = price.toDoubleOrNull() ?: 0.0
+    val d = discount.toDoubleOrNull() ?: 0.0
+
+    val saved =
+        p * d / 100
+
+    val finalPrice =
+        p - saved
+
+    ConverterCard("Discount Calculator") {
+
+        NumberField(
+            price,
+            { price = it },
+            "Original Price"
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        NumberField(
+            discount,
+            { discount = it },
+            "Discount %"
+        )
+
+        ResultText(
+            "You Save: ₹${formatNumber(saved)}"
+        )
+
+        Text(
+            "Final Price: ₹${formatNumber(finalPrice)}",
+            color = Green,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+// ============================================================
+// VOLUME
+// ============================================================
+
+@Composable
+private fun VolumeConverter() {
+
+    var value by remember {
+        mutableStateOf("1")
+    }
+
+    var from by remember {
+        mutableStateOf("Liter")
+    }
+
+    var to by remember {
+        mutableStateOf("Milliliter")
+    }
+
+    val factors = mapOf(
+        "Liter" to 1.0,
+        "Milliliter" to 0.001,
+        "Cubic Meter" to 1000.0,
+        "Gallon" to 3.785411784,
+        "Quart" to 0.946352946,
+        "Pint" to 0.473176473,
+        "Cup" to 0.2365882365
+    )
+
+    val result =
+        (value.toDoubleOrNull() ?: 0.0) *
+            factors.getValue(from) /
+            factors.getValue(to)
+
+    ConverterCard("Volume Converter") {
+
+        NumberField(
+            value,
+            { value = it },
+            "Volume"
+        )
+
+        Spacer(Modifier.height(10.dp))
+
+        UnitRow(
+            from,
+            factors.keys.toList()
+        ) {
+            from = it
+        }
+
+        Spacer(Modifier.height(10.dp))
+
+        UnitRow(
+            to,
+            factors.keys.toList()
+        ) {
+            to = it
+        }
+
+        ResultText(
+            formatNumber(result)
+        )
+    }
+}
+
+// ============================================================
+// NUMERAL SYSTEM
+// ============================================================
+
+@Composable
+private fun NumeralConverter() {
+
+    var value by remember {
+        mutableStateOf("255")
+    }
+
+    val decimal =
+        value.toIntOrNull(10) ?: 0
+
+    ConverterCard("Numeral System Converter") {
+
+        NumberField(
+            value,
+            { value = it },
+            "Decimal Number"
+        )
+
+        ResultText(
+            "Binary: ${decimal.toString(2)}"
+        )
+
+        Text(
+            "Octal: ${decimal.toString(8)}",
+            color = Color.White,
+            fontSize = 18.sp
+        )
+
+        Text(
+            "Hexadecimal: ${decimal.toString(16).uppercase()}",
+            color = Color.White,
+            fontSize = 18.sp
+        )
+    }
+}
+
+// ============================================================
+// SPEED
+// ============================================================
+
+@Composable
+private fun SpeedConverter() {
+
+    var value by remember {
+        mutableStateOf("60")
+    }
+
+    var from by remember {
+        mutableStateOf("km/h")
+    }
+
+    var to by remember {
+        mutableStateOf("mph")
+    }
+
+    val factors = mapOf(
+        "m/s" to 1.0,
+        "km/h" to 0.2777777778,
+        "mph" to 0.44704,
+        "knot" to 0.5144444444
+    )
+
+    val result =
+        (value.toDoubleOrNull() ?: 0.0) *
+            factors.getValue(from) /
+            factors.getValue(to)
+
+    ConverterCard("Speed Converter") {
+
+        NumberField(
+            value,
+            { value = it },
+            "Speed"
+        )
+
+        Spacer(Modifier.height(10.dp))
+
+        UnitRow(
+            from,
+            factors.keys.toList()
+        ) {
+            from = it
+        }
+
+        Spacer(Modifier.height(10.dp))
+
+        UnitRow(
+            to,
+            factors.keys.toList()
+        ) {
+            to = it
+        }
+
+        ResultText(
+            formatNumber(result)
+        )
+    }
+}
+
+// ============================================================
+// TEMPERATURE
+// ============================================================
+
+@Composable
+private fun TemperatureConverter() {
+
+    var value by remember {
+        mutableStateOf("25")
+    }
+
+    var from by remember {
+        mutableStateOf("Celsius")
+    }
+
+    var to by remember {
+        mutableStateOf("Fahrenheit")
+    }
+
+    val input =
+        value.toDoubleOrNull() ?: 0.0
+
+    val celsius =
+        when (from) {
+
+            "Celsius" -> input
+
+            "Fahrenheit" ->
+                (input - 32) * 5 / 9
+
+            "Kelvin" ->
+                input - 273.15
+
+            else -> input
+        }
+
+    val result =
+        when (to) {
+
+            "Celsius" -> celsius
+
+            "Fahrenheit" ->
+                celsius * 9 / 5 + 32
+
+            "Kelvin" ->
+                celsius + 273.15
+
+            else -> celsius
+        }
+
+    ConverterCard("Temperature Converter") {
+
+        NumberField(
+            value,
+            { value = it },
+            "Temperature"
+        )
+
+        Spacer(Modifier.height(10.dp))
+
+        UnitRow(
+            from,
+            listOf(
+                "Celsius",
+                "Fahrenheit",
+                "Kelvin"
+            )
+        ) {
+            from = it
+        }
+
+        Spacer(Modifier.height(10.dp))
+
+        UnitRow(
+            to,
+            listOf(
+                "Celsius",
+                "Fahrenheit",
+                "Kelvin"
+            )
+        ) {
+            to = it
+        }
+
+        ResultText(
+            formatNumber(result)
+        )
+    }
+}
+
+// ============================================================
+// GST
+// ============================================================
+
+@Composable
+private fun GstConverter() {
+
+    var amount by remember {
+        mutableStateOf("1000")
+    }
+
+    var gst by remember {
+        mutableStateOf("18")
+    }
+
+    val a = amount.toDoubleOrNull() ?: 0.0
+    val g = gst.toDoubleOrNull() ?: 0.0
+
+    val gstAmount =
+        a * g / 100
+
+    val total =
+        a + gstAmount
+
+    val baseFromInclusive =
+        a * 100 / (100 + g)
+
+    val gstFromInclusive =
+        a - baseFromInclusive
+
+    ConverterCard("GST Calculator") {
+
+        NumberField(
+            amount,
+            { amount = it },
+            "Amount"
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        NumberField(
+            gst,
+            { gst = it },
+            "GST %"
+        )
+
+        ResultText(
+            "GST Amount: ₹${formatNumber(gstAmount)}"
+        )
+
+        Text(
+            "Total: ₹${formatNumber(total)}",
+            color = Green,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Divider(
+            Modifier.padding(vertical = 14.dp)
+        )
+
+        Text(
+            "If amount includes GST:",
+            color = Color.Gray
+        )
+
+        Text(
+            "Base: ₹${formatNumber(baseFromInclusive)}",
+            color = Color.White
+        )
+
+        Text(
+            "GST: ₹${formatNumber(gstFromInclusive)}",
+            color = Blue
+        )
+    }
+}
+
+// ============================================================
+// BMI
+// ============================================================
+
+@Composable
+private fun BmiConverter() {
+
+    var weight by remember {
+        mutableStateOf("70")
+    }
+
+    var height by remember {
+        mutableStateOf("170")
+    }
+
+    val w =
+        weight.toDoubleOrNull() ?: 0.0
+
+    val h =
+        height.toDoubleOrNull() ?: 0.0
+
+    val bmi =
+        if (h > 0)
+            w / (h / 100).pow(2)
+        else
+            0.0
+
+    val category =
+        when {
+
+            bmi <= 0 -> "Enter valid values"
+
+            bmi < 18.5 ->
+                "Underweight"
+
+            bmi < 25 ->
+                "Normal"
+
+            bmi < 30 ->
+                "Overweight"
+
+            else ->
+                "Obesity"
+        }
+
+    ConverterCard("BMI Calculator") {
+
+        NumberField(
+            weight,
+            { weight = it },
+            "Weight (kg)"
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        NumberField(
+            height,
+            { height = it },
+            "Height (cm)"
+        )
+
+        ResultText(
+            "BMI: ${formatNumber(bmi)}"
+        )
+
+        Text(
+            category,
+            color =
+                if (category == "Normal")
+                    Green
+                else
+                    Orange,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+// ============================================================
+// SETTINGS
+// ============================================================
+
+@Composable
+private fun SettingsScreen(
+    padding: PaddingValues,
+    darkMode: Boolean,
+    wallpaper: String?,
+    onDarkModeChange: (Boolean) -> Unit,
+    onPickWallpaper: () -> Unit,
+    onRemoveWallpaper: () -> Unit
+) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)
+            .verticalScroll(
+                rememberScrollState()
+            )
+            .padding(16.dp)
+    ) {
+
+        Text(
+            "Settings",
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(
+            Modifier.height(16.dp)
+        )
+
+        SettingsCard {
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment =
+                    Alignment.CenterVertically
+            ) {
+
+                Icon(
+                    if (darkMode)
+                        Icons.Default.DarkMode
+                    else
+                        Icons.Default.LightMode,
+                    contentDescription = null,
+                    tint = Blue
+                )
+
+                Spacer(
+                    Modifier.width(14.dp)
+                )
+
+                Column(
+                    Modifier.weight(1f)
+                ) {
+
+                    Text(
+                        "Dark / Light Theme",
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Text(
+                        if (darkMode)
+                            "Dark mode"
+                        else
+                            "Light mode",
+                        color = Color.Gray,
+                        fontSize = 12.sp
+                    )
+                }
+
+                Switch(
+                    checked = darkMode,
+                    onCheckedChange =
+                        onDarkModeChange
+                )
+            }
+        }
+
+        Spacer(
+            Modifier.height(10.dp)
+        )
+
+        SettingsCard {
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment =
+                    Alignment.CenterVertically
+            ) {
+
+                Icon(
+                    Icons.Default.Wallpaper,
+                    contentDescription = null,
+                    tint = Blue
+                )
+
+                Spacer(
+                    Modifier.width(14.dp)
+                )
+
+                Column(
+                    Modifier.weight(1f)
+                ) {
+
+                    Text(
+                        "Calculator Wallpaper",
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Text(
+                        if (wallpaper == null)
+                            "No wallpaper selected"
+                        else
+                            "Custom wallpaper selected",
+                        color = Color.Gray,
+                        fontSize = 12.sp
+                    )
+                }
+
+                Button(
+                    onClick = onPickWallpaper
+                ) {
+
+                    Text("Choose")
+                }
+            }
+
+            if (wallpaper != null) {
+
+                TextButton(
+                    onClick = onRemoveWallpaper
+                ) {
+
+                    Text(
+                        "Remove wallpaper"
+                    )
+                }
+            }
+        }
+
+        Spacer(
+            Modifier.height(10.dp)
+        )
+
+        SettingsCard {
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment =
+                    Alignment.CenterVertically
+            ) {
+
+                Icon(
+                    Icons.Default.Palette,
+                    contentDescription = null,
+                    tint = Blue
+                )
+
+                Spacer(
+                    Modifier.width(14.dp)
+                )
+
+                Column {
+
+                    Text(
+                        "Blue + Black Premium",
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Text(
+                        "Main app colour scheme",
+                        color = Color.Gray,
+                        fontSize = 12.sp
+                    )
+                }
+            }
+        }
+
+        Spacer(
+            Modifier.height(10.dp)
+        )
+
+        SettingsCard {
+
+            Text(
+                "Tamil Date & Time",
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(
+                Modifier.height(8.dp)
+            )
+
+            Text(
+                tamilDateTime(),
+                color = Blue,
+                fontSize = 18.sp
+            )
+        }
+
+        Spacer(
+            Modifier.height(10.dp)
+        )
+
+        SettingsCard {
+
+            Text(
+                "Features",
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(
+                Modifier.height(8.dp)
+            )
+
+            Text(
+                "✓ Basic Calculator\n" +
+                    "✓ Scientific Calculator\n" +
+                    "✓ History\n" +
+                    "✓ M+, M-, MR, MC\n" +
+                    "✓ Share Calculation\n" +
+                    "✓ Screenshot Share\n" +
+                    "✓ Currency\n" +
+                    "✓ Length\n" +
+                    "✓ Mass\n" +
+                    "✓ Area\n" +
+                    "✓ Time\n" +
+                    "✓ Finance\n" +
+                    "✓ Data\n" +
+                    "✓ Date\n" +
+                    "✓ Discount\n" +
+                    "✓ Volume\n" +
+                    "✓ Numeral System\n" +
+                    "✓ Speed\n" +
+                    "✓ Temperature\n" +
+                    "✓ GST\n" +
+                    "✓ BMI\n" +
+                    "✓ Dark / Light Theme\n" +
+                    "✓ Custom Wallpaper\n" +
+                    "✓ Tamil Date & Time",
+                color = Color.LightGray,
+                lineHeight = 24.sp
+            )
+        }
+
+        Spacer(
+            Modifier.height(30.dp)
+        )
+
+        Text(
+            "Blue Black Calculator • v1.0",
+            color = Color.Gray,
+            modifier = Modifier.align(
+                Alignment.CenterHorizontally
+            )
+        )
+    }
+}
+
+@Composable
+private fun SettingsCard(
+    content: @Composable () -> Unit
+) {
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = DarkCard
+        )
+    ) {
+
+        Column(
+            Modifier.padding(18.dp)
+        ) {
+            content()
+        }
+    }
+}
